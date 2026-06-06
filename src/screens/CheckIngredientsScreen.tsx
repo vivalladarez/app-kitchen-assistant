@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { PrimaryButton } from '../components';
 import { colors, spacing } from '../constants/theme';
@@ -15,7 +15,7 @@ interface CheckItem {
   type: 'ingredient' | 'material';
 }
 
-export function CheckIngredientsScreen({ route }: Props) {
+export function CheckIngredientsScreen({ navigation, route }: Props) {
   const { getRecipeById } = useRecipes();
   const recipe = getRecipeById(route.params.recipeId);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -44,11 +44,7 @@ export function CheckIngredientsScreen({ route }: Props) {
   };
 
   const handleConfirm = () => {
-    Alert.alert(
-      'Ingredientes confirmados!',
-      'Tudo pronto para iniciar o modo passo a passo. (Disponível na próxima MR)',
-      [{ text: 'OK' }],
-    );
+    navigation.navigate('DialogMode', { recipeId: route.params.recipeId });
   };
 
   if (!recipe) {

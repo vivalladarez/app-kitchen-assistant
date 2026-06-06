@@ -1,5 +1,6 @@
 export { CheckIngredientsScreen } from './CheckIngredientsScreen';
 export { CreateRecipeScreen } from './CreateRecipeScreen';
+export { DialogModeScreen } from './DialogModeScreen';
 export { EditRecipeScreen } from './EditRecipeScreen';
 export { FavoritesScreen } from './FavoritesScreen';
 export { HomeScreen } from './HomeScreen';

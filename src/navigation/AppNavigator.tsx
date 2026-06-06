@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import {
   CheckIngredientsScreen,
   CreateRecipeScreen,
+  DialogModeScreen,
   EditRecipeScreen,
   FavoritesScreen,
   HomeScreen,
@@ -50,6 +51,11 @@ export function AppNavigator() {
           name="CheckIngredients"
           component={CheckIngredientsScreen}
           options={{ title: 'Conferir ingredientes' }}
+        />
+        <Stack.Screen
+          name="DialogMode"
+          component={DialogModeScreen}
+          options={{ title: 'Modo diálogo' }}
         />
         <Stack.Screen
           name="EditRecipe"
