@@ -2,15 +2,18 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { RecipeProvider } from './src/context/RecipeContext';
+import { SettingsProvider } from './src/context/SettingsContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <RecipeProvider>
-        <AppNavigator />
-        <StatusBar style="auto" />
-      </RecipeProvider>
+      <SettingsProvider>
+        <RecipeProvider>
+          <AppNavigator />
+          <StatusBar style="auto" />
+        </RecipeProvider>
+      </SettingsProvider>
     </SafeAreaProvider>
   );
 }

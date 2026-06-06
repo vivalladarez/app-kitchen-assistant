@@ -10,15 +10,10 @@ import {
 } from 'react-native';
 
 import { FilterChip, RecipeCard } from '../components';
-import {
-  categoryLabels,
-  festivityLabels,
-  prepTimeOptions,
-  SortOption,
-  sortLabels,
-} from '../constants/labels';
-import { colors, spacing } from '../constants/theme';
+import { categoryLabels, festivityLabels, prepTimeOptions, SortOption, sortLabels } from '../constants/labels';
+import { spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
+import { useSettings } from '../context/SettingsContext';
 import { RecipeCategory, RecipeFestivity, RootStackParamList } from '../types';
 import { filterAndSortRecipes } from '../utils/recipeFilters';
 
@@ -30,6 +25,8 @@ const sortOptions = Object.entries(sortLabels) as [SortOption, string][];
 
 export function SearchScreen({ navigation }: Props) {
   const { recipes, toggleFavorite } = useRecipes();
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [festivity, setFestivity] = useState<RecipeFestivity | null>(null);
@@ -49,9 +46,17 @@ export function SearchScreen({ navigation }: Props) {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <TextInput
-        style={styles.searchInput}
+        style={[
+          styles.searchInput,
+          {
+            backgroundColor: colors.surface,
+            borderColor: colors.border,
+            color: colors.text,
+            fontSize: typography.md,
+          },
+        ]}
         value={query}
         onChangeText={setQuery}
         placeholder="Buscar receitas..."
@@ -65,7 +70,7 @@ export function SearchScreen({ navigation }: Props) {
         style={styles.filterRow}
         contentContainerStyle={styles.filterContent}
       >
-        <Text style={styles.filterLabel}>Categoria:</Text>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary, fontSize: typography.sm }]}>Categoria:</Text>
         <FilterChip
           label="Todas"
           selected={category === null}
@@ -87,7 +92,7 @@ export function SearchScreen({ navigation }: Props) {
         style={styles.filterRow}
         contentContainerStyle={styles.filterContent}
       >
-        <Text style={styles.filterLabel}>Festividade:</Text>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary, fontSize: typography.sm }]}>Festividade:</Text>
         <FilterChip
           label="Todas"
           selected={festivity === null}
@@ -109,7 +114,7 @@ export function SearchScreen({ navigation }: Props) {
         style={styles.filterRow}
         contentContainerStyle={styles.filterContent}
       >
-        <Text style={styles.filterLabel}>Tempo:</Text>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary, fontSize: typography.sm }]}>Tempo:</Text>
         {prepTimeOptions.map((opt) => (
           <FilterChip
             key={opt.value}
@@ -126,7 +131,7 @@ export function SearchScreen({ navigation }: Props) {
         style={styles.filterRow}
         contentContainerStyle={styles.filterContent}
       >
-        <Text style={styles.filterLabel}>Ordenar:</Text>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary, fontSize: typography.sm }]}>Ordenar:</Text>
         {sortOptions.map(([key, label]) => (
           <FilterChip
             key={key}
@@ -137,7 +142,7 @@ export function SearchScreen({ navigation }: Props) {
         ))}
       </ScrollView>
 
-      <Text style={styles.resultCount}>
+      <Text style={[styles.resultCount, { color: colors.textSecondary, fontSize: typography.sm }]}>
         {filtered.length}{' '}
         {filtered.length === 1 ? 'receita encontrada' : 'receitas encontradas'}
       </Text>
@@ -154,7 +159,7 @@ export function SearchScreen({ navigation }: Props) {
           />
         )}
         ListEmptyComponent={
-          <Text style={styles.empty}>Nenhuma receita encontrada.</Text>
+          <Text style={[styles.empty, { color: colors.textSecondary, fontSize: typography.md }]}>Nenhuma receita encontrada.</Text>
         }
       />
     </View>
@@ -164,18 +169,13 @@ export function SearchScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     padding: spacing.md,
   },
   searchInput: {
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: 12,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
     marginBottom: spacing.sm,
   },
   filterRow: {
@@ -187,14 +187,10 @@ const styles = StyleSheet.create({
     paddingRight: spacing.md,
   },
   filterLabel: {
-    fontSize: 13,
     fontWeight: '600',
-    color: colors.textSecondary,
     marginRight: spacing.sm,
   },
   resultCount: {
-    fontSize: 14,
-    color: colors.textSecondary,
     marginVertical: spacing.sm,
   },
   list: {
@@ -202,8 +198,6 @@ const styles = StyleSheet.create({
   },
   empty: {
     textAlign: 'center',
-    color: colors.textSecondary,
     marginTop: spacing.xl,
-    fontSize: 16,
   },
 });

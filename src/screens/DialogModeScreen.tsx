@@ -10,8 +10,9 @@ import {
 
 import { PrimaryButton, StepCard, VoiceCommandButton } from '../components';
 import { dialogVoiceCommands } from '../constants/voiceCommands';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
+import { useSettings } from '../context/SettingsContext';
 import { useDialogMode } from '../hooks/useDialogMode';
 import { speechService } from '../services/speechService';
 import { RootStackParamList, VoiceCommand } from '../types';
@@ -20,6 +21,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'DialogMode'>;
 
 export function DialogModeScreen({ navigation, route }: Props) {
   const { getRecipeById } = useRecipes();
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
   const recipe = getRecipeById(route.params.recipeId);
   const initialStep = route.params.stepIndex ?? 0;
 
@@ -70,8 +73,10 @@ export function DialogModeScreen({ navigation, route }: Props) {
 
   if (!recipe) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.error}>Receita não encontrada.</Text>
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <Text style={[styles.error, { color: colors.textSecondary, fontSize: typography.md }]}>
+          Receita não encontrada.
+        </Text>
       </View>
     );
   }
@@ -79,13 +84,13 @@ export function DialogModeScreen({ navigation, route }: Props) {
   const isFinished = phase === 'finished';
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Text style={styles.recipeTitle} numberOfLines={1}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.topBar, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <Text style={[styles.recipeTitle, { color: colors.text, fontSize: typography.md }]} numberOfLines={1}>
           {recipe.title}
         </Text>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+        <View style={[styles.progressTrack, { backgroundColor: colors.border }]}>
+          <View style={[styles.progressFill, { width: `${progress * 100}%`, backgroundColor: colors.primary }]} />
         </View>
       </View>
 
@@ -103,8 +108,16 @@ export function DialogModeScreen({ navigation, route }: Props) {
         />
 
         {statusMessage && (
-          <View style={styles.statusBanner}>
-            <Text style={styles.statusText}>{statusMessage}</Text>
+          <View
+            style={[
+              styles.statusBanner,
+              {
+                backgroundColor: colors.warningBg,
+                borderColor: colors.warningBorder,
+              },
+            ]}
+          >
+            <Text style={[styles.statusText, { color: colors.warningText, fontSize: typography.md }]}>{statusMessage}</Text>
           </View>
         )}
 
@@ -124,7 +137,7 @@ export function DialogModeScreen({ navigation, route }: Props) {
           </View>
         ) : (
           <>
-            <Text style={styles.commandsTitle}>Comandos simulados</Text>
+            <Text style={[styles.commandsTitle, { color: colors.textSecondary, fontSize: typography.sm }]}>Comandos simulados</Text>
             <View style={styles.commandsGrid}>
               {dialogVoiceCommands.map((command) => (
                 <VoiceCommandButton
@@ -153,40 +166,30 @@ export function DialogModeScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  error: {
-    fontSize: 16,
-    color: colors.textSecondary,
-  },
+  error: {},
   topBar: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
     paddingBottom: spacing.sm,
-    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   recipeTitle: {
-    fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
     marginBottom: spacing.sm,
   },
   progressTrack: {
     height: 6,
-    backgroundColor: colors.border,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: colors.primary,
     borderRadius: 3,
   },
   content: {
@@ -194,22 +197,16 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   statusBanner: {
-    backgroundColor: '#FFF3CD',
     borderRadius: 10,
     padding: spacing.md,
     marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: '#FFECB5',
   },
   statusText: {
-    fontSize: 15,
-    color: '#856404',
     fontWeight: '500',
   },
   commandsTitle: {
-    fontSize: 15,
     fontWeight: '600',
-    color: colors.textSecondary,
     marginBottom: spacing.sm,
   },
   commandsGrid: {

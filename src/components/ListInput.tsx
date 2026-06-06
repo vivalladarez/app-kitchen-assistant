@@ -6,7 +6,8 @@ import {
   View,
 } from 'react-native';
 
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 
 interface ListInputProps {
   label: string;
@@ -16,6 +17,9 @@ interface ListInputProps {
 }
 
 export function ListInput({ label, items, onChange, placeholder }: ListInputProps) {
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
+
   const updateItem = (index: number, value: string) => {
     const next = [...items];
     next[index] = value;
@@ -31,15 +35,27 @@ export function ListInput({ label, items, onChange, placeholder }: ListInputProp
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={[styles.label, { color: colors.text, fontSize: typography.md }]}>
+          {label}
+        </Text>
         <Pressable accessibilityRole="button" onPress={addItem}>
-          <Text style={styles.addButton}>+ Adicionar</Text>
+          <Text style={[styles.addButton, { color: colors.primary, fontSize: typography.sm }]}>
+            + Adicionar
+          </Text>
         </Pressable>
       </View>
       {items.map((item, index) => (
         <View key={index} style={styles.row}>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                color: colors.text,
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                fontSize: typography.md,
+              },
+            ]}
             value={item}
             onChangeText={(text) => updateItem(index, text)}
             placeholder={placeholder ?? `${label} ${index + 1}`}
@@ -51,7 +67,7 @@ export function ListInput({ label, items, onChange, placeholder }: ListInputProp
               accessibilityLabel={`Remover ${label}`}
               onPress={() => removeItem(index)}
             >
-              <Text style={styles.removeButton}>✕</Text>
+              <Text style={[styles.removeButton, { color: colors.accent }]}>✕</Text>
             </Pressable>
           )}
         </View>
@@ -71,14 +87,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   label: {
-    fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
   },
   addButton: {
-    fontSize: 14,
     fontWeight: '600',
-    color: colors.primary,
   },
   row: {
     flexDirection: 'row',
@@ -89,17 +101,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: 8,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: colors.surface,
   },
   removeButton: {
     fontSize: 18,
-    color: colors.accent,
     padding: spacing.xs,
   },
 });

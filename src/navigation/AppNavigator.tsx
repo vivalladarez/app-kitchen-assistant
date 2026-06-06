@@ -1,6 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
+import { LoadingScreen } from '../components/LoadingScreen';
+import { useRecipes } from '../context/RecipeContext';
+import { useSettings } from '../context/SettingsContext';
 import {
   CheckIngredientsScreen,
   CreateRecipeScreen,
@@ -17,16 +20,26 @@ import { RootStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const screenOptions = {
-  headerStyle: { backgroundColor: '#2D6A4F' },
-  headerTintColor: '#FFFFFF',
-  headerTitleStyle: { fontWeight: '600' as const },
-};
+function NavigationRoot() {
+  const { theme, isReady: settingsReady } = useSettings();
+  const { isReady: recipesReady } = useRecipes();
+  const { colors } = theme;
 
-export function AppNavigator() {
+  if (!settingsReady || !recipesReady) {
+    return <LoadingScreen />;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions}>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: { backgroundColor: colors.header },
+          headerTintColor: colors.headerText,
+          headerTitleStyle: { fontWeight: '600' },
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -80,4 +93,8 @@ export function AppNavigator() {
       </Stack.Navigator>
     </NavigationContainer>
   );
+}
+
+export function AppNavigator() {
+  return <NavigationRoot />;
 }

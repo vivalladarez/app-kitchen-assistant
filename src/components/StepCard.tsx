@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 import { DialogPhase } from '../hooks/useDialogMode';
 import { RecipeStep } from '../types';
 
@@ -29,6 +30,8 @@ export function StepCard({
   phase,
   isSpeaking,
 }: StepCardProps) {
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
   const { width } = useWindowDimensions();
   const videoRef = useRef<Video>(null);
   const [mediaError, setMediaError] = useState(false);
@@ -50,34 +53,45 @@ export function StepCard({
     phase === 'recovery'
       ? colors.accent
       : phase === 'adaptation'
-        ? '#E9C46A'
+        ? colors.warningText
         : phase === 'finished'
           ? colors.success
           : colors.primary;
 
   return (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: colors.surface, borderColor: colors.border },
+      ]}
+    >
       <View style={styles.header}>
         <View style={[styles.badge, { backgroundColor: phaseColor }]}>
-          <Text style={styles.badgeText}>{phaseLabel}</Text>
+          <Text style={[styles.badgeText, { fontSize: typography.sm }]}>{phaseLabel}</Text>
         </View>
         {isSpeaking && (
-          <View style={styles.speakingBadge}>
-            <Text style={styles.speakingText}>🔊 Falando...</Text>
+          <View style={[styles.speakingBadge, { backgroundColor: colors.background }]}>
+            <Text style={[styles.speakingText, { color: colors.primaryDark, fontSize: typography.xs }]}>
+              🔊 Falando...
+            </Text>
           </View>
         )}
       </View>
 
-      <Text style={styles.instruction}>{displayText}</Text>
+      <Text style={[styles.instruction, { color: colors.text, fontSize: typography.lg }]}>
+        {displayText}
+      </Text>
 
       {step?.mediaUrl && !mediaError && phase !== 'finished' && (
         <View style={styles.mediaContainer}>
-          <Text style={styles.mediaLabel}>Apoio visual</Text>
+          <Text style={[styles.mediaLabel, { color: colors.textSecondary, fontSize: typography.sm }]}>
+            Apoio visual
+          </Text>
           {step.mediaType === 'video' ? (
             <Video
               ref={videoRef}
               source={{ uri: step.mediaUrl }}
-              style={[styles.media, { width: width - spacing.lg * 4 }]}
+              style={[styles.media, { width: width - spacing.lg * 4, backgroundColor: colors.border }]}
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
               onError={() => setMediaError(true)}
@@ -85,7 +99,7 @@ export function StepCard({
           ) : (
             <Image
               source={{ uri: step.mediaUrl }}
-              style={[styles.media, { width: width - spacing.lg * 4 }]}
+              style={[styles.media, { width: width - spacing.lg * 4, backgroundColor: colors.border }]}
               resizeMode="cover"
               accessibilityLabel="Imagem de apoio para o passo atual"
               onError={() => setMediaError(true)}
@@ -95,7 +109,9 @@ export function StepCard({
       )}
 
       {mediaError && (
-        <Text style={styles.mediaFallback}>Mídia de apoio indisponível no momento.</Text>
+        <Text style={[styles.mediaFallback, { color: colors.textSecondary, fontSize: typography.sm }]}>
+          Mídia de apoio indisponível no momento.
+        </Text>
       )}
     </View>
   );
@@ -103,11 +119,9 @@ export function StepCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.border,
     marginBottom: spacing.md,
   },
   header: {
@@ -125,44 +139,33 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: 13,
     fontWeight: '700',
   },
   speakingBadge: {
-    backgroundColor: '#E8F5E9',
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 8,
   },
   speakingText: {
-    fontSize: 12,
-    color: colors.primaryDark,
     fontWeight: '600',
   },
   instruction: {
-    fontSize: 20,
     lineHeight: 30,
-    color: colors.text,
     fontWeight: '500',
   },
   mediaContainer: {
     marginTop: spacing.lg,
   },
   mediaLabel: {
-    fontSize: 13,
     fontWeight: '600',
-    color: colors.textSecondary,
     marginBottom: spacing.sm,
   },
   media: {
     height: 200,
     borderRadius: 12,
-    backgroundColor: colors.border,
   },
   mediaFallback: {
     marginTop: spacing.md,
-    fontSize: 13,
-    color: colors.textSecondary,
     fontStyle: 'italic',
   },
 });

@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { voiceCommandLabels } from '../constants/voiceCommands';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 import { VoiceCommand } from '../types';
 
 interface VoiceCommandButtonProps {
@@ -15,6 +16,9 @@ export function VoiceCommandButton({
   onPress,
   disabled,
 }: VoiceCommandButtonProps) {
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -23,12 +27,22 @@ export function VoiceCommandButton({
       onPress={() => onPress(command)}
       style={({ pressed }) => [
         styles.button,
+        {
+          backgroundColor: pressed && !disabled ? colors.background : colors.surface,
+          borderColor: colors.primary,
+        },
         disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
       ]}
     >
       <Text style={styles.icon}>🎤</Text>
-      <Text style={styles.label}>{voiceCommandLabels[command]}</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.primary, fontSize: typography.sm },
+        ]}
+      >
+        {voiceCommandLabels[command]}
+      </Text>
     </Pressable>
   );
 }
@@ -37,18 +51,13 @@ const styles = StyleSheet.create({
   button: {
     flexBasis: '47%',
     flexGrow: 1,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.primary,
     borderRadius: 12,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 72,
-  },
-  pressed: {
-    backgroundColor: '#E8F5E9',
   },
   disabled: {
     opacity: 0.45,
@@ -58,9 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   label: {
-    fontSize: 13,
     fontWeight: '600',
-    color: colors.primary,
     textAlign: 'center',
   },
 });

@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { categoryLabels, festivityLabels } from '../constants/labels';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 import { Recipe } from '../types';
 
 interface RecipeCardProps {
@@ -17,14 +18,27 @@ export function RecipeCard({
   onToggleFavorite,
   showFavorite = true,
 }: RecipeCardProps) {
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
+
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.card,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          opacity: pressed ? 0.9 : 1,
+        },
+      ]}
     >
       <View style={styles.header}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text
+          style={[styles.title, { color: colors.text, fontSize: typography.md + 1 }]}
+          numberOfLines={2}
+        >
           {recipe.title}
         </Text>
         {showFavorite && onToggleFavorite && (
@@ -36,16 +50,22 @@ export function RecipeCard({
             hitSlop={8}
             onPress={onToggleFavorite}
           >
-            <Text style={styles.favoriteIcon}>{recipe.isFavorite ? '★' : '☆'}</Text>
+            <Text style={[styles.favoriteIcon, { color: colors.favorite }]}>
+              {recipe.isFavorite ? '★' : '☆'}
+            </Text>
           </Pressable>
         )}
       </View>
-      <Text style={styles.meta}>
+      <Text style={[styles.meta, { color: colors.textSecondary, fontSize: typography.sm }]}>
         {categoryLabels[recipe.category]} · {festivityLabels[recipe.festivity]}
       </Text>
       <View style={styles.footer}>
-        <Text style={styles.time}>{recipe.prepTimeMinutes} min</Text>
-        <Text style={styles.popularity}>★ {recipe.popularity}</Text>
+        <Text style={[styles.time, { color: colors.primary, fontSize: typography.sm }]}>
+          {recipe.prepTimeMinutes} min
+        </Text>
+        <Text style={[styles.popularity, { color: colors.textSecondary, fontSize: typography.sm }]}>
+          ★ {recipe.popularity}
+        </Text>
       </View>
     </Pressable>
   );
@@ -53,16 +73,10 @@ export function RecipeCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.border,
-  },
-  pressed: {
-    opacity: 0.9,
-    backgroundColor: '#F1F3F5',
   },
   header: {
     flexDirection: 'row',
@@ -72,18 +86,13 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 17,
     fontWeight: '600',
-    color: colors.text,
   },
   favoriteIcon: {
     fontSize: 22,
-    color: colors.favorite,
   },
   meta: {
     marginTop: spacing.xs,
-    fontSize: 14,
-    color: colors.textSecondary,
   },
   footer: {
     flexDirection: 'row',
@@ -91,12 +100,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   time: {
-    fontSize: 14,
     fontWeight: '500',
-    color: colors.primary,
   },
-  popularity: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
+  popularity: {},
 });

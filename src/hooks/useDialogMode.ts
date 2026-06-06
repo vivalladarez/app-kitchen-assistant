@@ -4,6 +4,7 @@ import {
   ADAPTATION_MESSAGE,
   RECIPE_COMPLETE_MESSAGE,
 } from '../constants/voiceCommands';
+import { useSettings } from '../context/SettingsContext';
 import { connectedKitchenService } from '../services/connectedKitchenService';
 import { speechService } from '../services/speechService';
 import { Recipe, RecipeStep, VoiceCommand } from '../types';
@@ -36,6 +37,7 @@ export function useDialogMode(
   recipe: Recipe | undefined,
   initialStepIndex = 0,
 ): UseDialogModeResult {
+  const { settings } = useSettings();
   const steps = useMemo(
     () => (recipe ? sortSteps(recipe.steps) : []),
     [recipe],
@@ -70,10 +72,11 @@ export function useDialogMode(
     if (!displayText) return;
     setIsSpeaking(true);
     speechService.speak(displayText, {
+      voiceProfile: settings.voiceProfile,
       onDone: () => setIsSpeaking(false),
       onStopped: () => setIsSpeaking(false),
     });
-  }, [displayText]);
+  }, [displayText, settings.voiceProfile]);
 
   useEffect(() => {
     if (!displayText) return;
@@ -131,7 +134,7 @@ export function useDialogMode(
           } else {
             const msg = 'Não há instrução de recuperação para este passo.';
             setStatusMessage(msg);
-            speechService.speak(msg);
+            speechService.speak(msg, { voiceProfile: settings.voiceProfile });
           }
           return { type: 'none' };
 
@@ -150,7 +153,7 @@ export function useDialogMode(
           const temp = connectedKitchenService.getTemperature();
           const msg = `${alert} (${temp}°C)`;
           setStatusMessage(msg);
-          speechService.speak(alert);
+          speechService.speak(alert, { voiceProfile: settings.voiceProfile });
           return { type: 'none' };
         }
 
@@ -164,7 +167,7 @@ export function useDialogMode(
           return { type: 'none' };
       }
     },
-    [phase, currentStep, advanceStep, speakCurrent],
+    [phase, currentStep, advanceStep, speakCurrent, settings.voiceProfile],
   );
 
   return {

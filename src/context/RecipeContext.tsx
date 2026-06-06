@@ -3,14 +3,19 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
 import { mockRecipes } from '../data/mockRecipes';
+import { storageService } from '../services/storageService';
 import { Recipe } from '../types';
+import { useSettings } from './SettingsContext';
 
 interface RecipeContextValue {
+  isReady: boolean;
   recipes: Recipe[];
   getRecipeById: (id: string) => Recipe | undefined;
   getFavoriteRecipes: () => Recipe[];
@@ -28,7 +33,29 @@ function generateId() {
 }
 
 export function RecipeProvider({ children }: { children: ReactNode }) {
+  const { isReady: settingsReady } = useSettings();
   const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
+  const [isReady, setIsReady] = useState(false);
+  const skipSave = useRef(true);
+
+  useEffect(() => {
+    if (!settingsReady) return;
+
+    async function load() {
+      const stored = await storageService.getRecipes();
+      setRecipes(stored ?? mockRecipes);
+      setIsReady(true);
+    }
+    load();
+  }, [settingsReady]);
+
+  useEffect(() => {
+    if (!isReady || skipSave.current) {
+      skipSave.current = false;
+      return;
+    }
+    storageService.saveRecipes(recipes);
+  }, [recipes, isReady]);
 
   const getRecipeById = useCallback(
     (id: string) => recipes.find((r) => r.id === id),
@@ -54,11 +81,7 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
   );
 
   const addRecipe = useCallback((data: Omit<Recipe, 'id'>) => {
-    const recipe: Recipe = {
-      ...data,
-      id: generateId(),
-      isCustom: true,
-    };
+    const recipe: Recipe = { ...data, id: generateId(), isCustom: true };
     setRecipes((prev) => [...prev, recipe]);
     return recipe;
   }, []);
@@ -90,6 +113,7 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
+      isReady,
       recipes,
       getRecipeById,
       getFavoriteRecipes,
@@ -100,6 +124,7 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
       copyRecipe,
     }),
     [
+      isReady,
       recipes,
       getRecipeById,
       getFavoriteRecipes,

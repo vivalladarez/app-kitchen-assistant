@@ -2,18 +2,21 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { RecipeCard } from '../components';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
+import { useSettings } from '../context/SettingsContext';
 import { RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Favorites'>;
 
 export function FavoritesScreen({ navigation }: Props) {
   const { getFavoriteRecipes, toggleFavorite } = useRecipes();
+  const { theme, typography } = useSettings();
+  const { colors } = theme;
   const favorites = getFavoriteRecipes();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={favorites}
         keyExtractor={(item) => item.id}
@@ -27,8 +30,10 @@ export function FavoritesScreen({ navigation }: Props) {
         )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>Nenhum favorito ainda</Text>
-            <Text style={styles.emptyText}>
+            <Text style={[styles.emptyTitle, { color: colors.text, fontSize: typography.lg }]}>
+              Nenhum favorito ainda
+            </Text>
+            <Text style={[styles.emptyText, { color: colors.textSecondary, fontSize: typography.md }]}>
               Busque receitas e toque na estrela para salvar aqui.
             </Text>
           </View>
@@ -41,7 +46,6 @@ export function FavoritesScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     padding: spacing.md,
   },
   list: {
@@ -54,14 +58,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   emptyTitle: {
-    fontSize: 18,
     fontWeight: '600',
-    color: colors.text,
     marginBottom: spacing.sm,
   },
   emptyText: {
-    fontSize: 15,
-    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
   },
