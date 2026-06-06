@@ -8,12 +8,18 @@ import {
   View,
 } from 'react-native';
 
-import { PrimaryButton, StepCard, VoiceCommandButton } from '../components';
+import {
+  PrimaryButton,
+  StepCard,
+  VoiceCommandButton,
+  VoiceDialogPanel,
+} from '../components';
 import { dialogVoiceCommands } from '../constants/voiceCommands';
 import { spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
 import { useSettings } from '../context/SettingsContext';
 import { useDialogMode } from '../hooks/useDialogMode';
+import { useVoiceDialog } from '../hooks/useVoiceDialog';
 import { speechService } from '../services/speechService';
 import { RootStackParamList, VoiceCommand } from '../types';
 
@@ -37,6 +43,8 @@ export function DialogModeScreen({ navigation, route }: Props) {
     isSpeaking,
     handleCommand,
   } = useDialogMode(recipe, initialStep);
+
+  const isFinished = phase === 'finished';
 
   const onVoiceCommand = useCallback(
     (command: VoiceCommand) => {
@@ -71,6 +79,21 @@ export function DialogModeScreen({ navigation, route }: Props) {
     [handleCommand, navigation, route.params.recipeId],
   );
 
+  const {
+    isAvailable: voiceAvailable,
+    isListening,
+    transcript,
+    voiceError,
+    assistantState,
+    startListening,
+    stopListening,
+  } = useVoiceDialog({
+    enabled: !isFinished,
+    isSpeaking,
+    isFinished,
+    onCommand: onVoiceCommand,
+  });
+
   if (!recipe) {
     return (
       <View style={[styles.centered, { backgroundColor: colors.background }]}>
@@ -80,8 +103,6 @@ export function DialogModeScreen({ navigation, route }: Props) {
       </View>
     );
   }
-
-  const isFinished = phase === 'finished';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -117,8 +138,20 @@ export function DialogModeScreen({ navigation, route }: Props) {
               },
             ]}
           >
-            <Text style={[styles.statusText, { color: colors.warningText, fontSize: typography.md }]}>{statusMessage}</Text>
+            <Text style={[styles.statusText, { color: colors.warningText, fontSize: typography.md }]}>
+              {statusMessage}
+            </Text>
           </View>
+        )}
+
+        {!isFinished && (
+          <VoiceDialogPanel
+            isAvailable={voiceAvailable}
+            assistantState={assistantState}
+            transcript={transcript}
+            voiceError={voiceError}
+            onMicPress={isListening ? stopListening : startListening}
+          />
         )}
 
         {isFinished ? (
@@ -137,7 +170,9 @@ export function DialogModeScreen({ navigation, route }: Props) {
           </View>
         ) : (
           <>
-            <Text style={[styles.commandsTitle, { color: colors.textSecondary, fontSize: typography.sm }]}>Comandos simulados</Text>
+            <Text style={[styles.commandsTitle, { color: colors.textSecondary, fontSize: typography.sm }]}>
+              {voiceAvailable ? 'Alternativa: toque nos comandos' : 'Comandos simulados'}
+            </Text>
             <View style={styles.commandsGrid}>
               {dialogVoiceCommands.map((command) => (
                 <VoiceCommandButton

@@ -27,7 +27,15 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Permita que o Cozinha Assistiva use o microfone para comandos de voz.",
+          "speechRecognitionPermission": "Permita que o Cozinha Assistiva reconheça sua fala durante o preparo.",
+          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+        }
+      ]
     ]
   }
 }

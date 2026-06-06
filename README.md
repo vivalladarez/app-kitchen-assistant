@@ -4,7 +4,7 @@ Aplicativo mobile em React Native (Expo) que atua como assistente inteligente de
 
 ## Stack
 
-- React Native + Expo (SDK 52)
+- React Native + Expo (SDK 54)
 - TypeScript
 - React Navigation
 - AsyncStorage (persistência local)

@@ -6,3 +6,4 @@ export { RecipeCard } from './RecipeCard';
 export { SettingsOption, SettingsToggle } from './SettingsOption';
 export { StepCard } from './StepCard';
 export { VoiceCommandButton } from './VoiceCommandButton';
+export { VoiceDialogPanel } from './VoiceDialogPanel';
