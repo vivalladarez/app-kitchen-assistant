@@ -1,29 +1,81 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export function HomeScreen() {
+import { PrimaryButton } from '../components';
+import { colors, spacing } from '../constants/theme';
+import { RootStackParamList } from '../types';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export function HomeScreen({ navigation }: Props) {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Cozinha Assistiva</Text>
-      <Text style={styles.subtitle}>Estrutura inicial do projeto</Text>
-    </View>
+      <Text style={styles.subtitle}>
+        Seu assistente de receitas para a cozinha conectada
+      </Text>
+
+      <PrimaryButton
+        title="Ativar modo diálogo"
+        style={styles.mainButton}
+        onPress={() =>
+          navigation.navigate('Search')
+        }
+      />
+
+      <View style={styles.menu}>
+        <PrimaryButton
+          title="Receitas favoritas"
+          variant="outline"
+          onPress={() => navigation.navigate('Favorites')}
+        />
+        <PrimaryButton
+          title="Buscar receitas"
+          variant="outline"
+          onPress={() => navigation.navigate('Search')}
+        />
+        <PrimaryButton
+          title="Criar receita"
+          variant="outline"
+          onPress={() => navigation.navigate('CreateRecipe', undefined)}
+        />
+        <PrimaryButton
+          title="Configurações"
+          variant="outline"
+          onPress={() => navigation.navigate('Settings')}
+        />
+        <PrimaryButton
+          title="Cadastro"
+          variant="outline"
+          onPress={() => navigation.navigate('Register')}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
+    flexGrow: 1,
+    padding: spacing.lg,
+    backgroundColor: colors.background,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
-    marginBottom: 8,
+    color: colors.text,
+    marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: colors.textSecondary,
+    marginBottom: spacing.xl,
+    lineHeight: 22,
+  },
+  mainButton: {
+    marginBottom: spacing.xl,
+  },
+  menu: {
+    gap: spacing.sm,
   },
 });

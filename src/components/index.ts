@@ -1,2 +1,4 @@
-// Componentes reutilizáveis — implementação na MR 1
-// RecipeCard, PrimaryButton, VoiceCommandButton, StepCard, SettingsOption, FilterChip
+export { FilterChip } from './FilterChip';
+export { ListInput } from './ListInput';
+export { PrimaryButton } from './PrimaryButton';
+export { RecipeCard } from './RecipeCard';

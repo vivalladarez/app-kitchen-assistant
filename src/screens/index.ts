@@ -1,2 +1,9 @@
-// Telas — implementação nas próximas MRs
+export { CheckIngredientsScreen } from './CheckIngredientsScreen';
+export { CreateRecipeScreen } from './CreateRecipeScreen';
+export { EditRecipeScreen } from './EditRecipeScreen';
+export { FavoritesScreen } from './FavoritesScreen';
 export { HomeScreen } from './HomeScreen';
+export { RecipeScreen } from './RecipeScreen';
+export { RegisterScreen } from './RegisterScreen';
+export { SearchScreen } from './SearchScreen';
+export { SettingsScreen } from './SettingsScreen';

@@ -1,2 +1,1 @@
-// Hooks customizados — implementação nas próximas MRs
-// useSettings, useRecipes, useVoiceCommands, useDialogMode
+export { useRecipes } from '../context/RecipeContext';

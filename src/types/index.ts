@@ -85,7 +85,7 @@ export type RootStackParamList = {
   Home: undefined;
   Favorites: undefined;
   Search: undefined;
-  CreateRecipe: undefined;
+  CreateRecipe: { copyFromId?: string } | undefined;
   Recipe: { recipeId: string };
   CheckIngredients: { recipeId: string };
   EditRecipe: { recipeId: string };

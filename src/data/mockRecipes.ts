@@ -1,3 +1,212 @@
 import { Recipe } from '../types';
 
-export const mockRecipes: Recipe[] = [];
+export const mockRecipes: Recipe[] = [
+  {
+    id: '1',
+    title: 'Bolo de Cenoura com Cobertura',
+    category: 'bolos',
+    festivity: 'aniversario',
+    prepTimeMinutes: 60,
+    popularity: 95,
+    ingredients: [
+      '3 cenouras médias raladas',
+      '3 ovos',
+      '1 xícara de óleo',
+      '2 xícaras de açúcar',
+      '2 xícaras de farinha de trigo',
+      '1 colher de sopa de fermento',
+    ],
+    materials: ['Forma redonda', 'Liquidificador', 'Batedeira', 'Espátula'],
+    steps: [
+      {
+        id: '1-1',
+        order: 1,
+        instruction: 'Pré-aqueça o forno a 180°C e unte a forma.',
+        recoveryInstruction: 'Se o forno não estiver quente, aguarde mais 5 minutos.',
+      },
+      {
+        id: '1-2',
+        order: 2,
+        instruction: 'Bata no liquidificador cenouras, ovos e óleo até ficar homogêneo.',
+      },
+      {
+        id: '1-3',
+        order: 3,
+        instruction: 'Misture a farinha, o açúcar e o fermento. Despeje na forma.',
+      },
+      {
+        id: '1-4',
+        order: 4,
+        instruction: 'Asse por 40 minutos. Faça o teste do palito antes de desenformar.',
+        recoveryInstruction: 'Se o palito sair com massa crua, asse por mais 5 minutos.',
+      },
+    ],
+    isFavorite: true,
+  },
+  {
+    id: '2',
+    title: 'Espaguete ao Molho Bolonhesa',
+    category: 'massas',
+    festivity: 'almoco-domingo',
+    prepTimeMinutes: 45,
+    popularity: 88,
+    ingredients: [
+      '500g de espaguete',
+      '400g de carne moída',
+      '1 lata de tomate pelado',
+      '1 cebola picada',
+      '2 dentes de alho',
+      'Sal e pimenta a gosto',
+    ],
+    materials: ['Panela grande', 'Frigideira', 'Colher de pau'],
+    steps: [
+      {
+        id: '2-1',
+        order: 1,
+        instruction: 'Ferva água com sal e cozinhe o espaguete conforme a embalagem.',
+      },
+      {
+        id: '2-2',
+        order: 2,
+        instruction: 'Refogue cebola e alho. Adicione a carne e doure.',
+      },
+      {
+        id: '2-3',
+        order: 3,
+        instruction: 'Acrescente o tomate e cozinhe por 20 minutos em fogo baixo.',
+      },
+      {
+        id: '2-4',
+        order: 4,
+        instruction: 'Escorra a massa e misture com o molho. Sirva imediatamente.',
+      },
+    ],
+  },
+  {
+    id: '3',
+    title: 'Frango Grelhado com Ervas',
+    category: 'carnes',
+    festivity: 'dia-a-dia',
+    prepTimeMinutes: 35,
+    popularity: 82,
+    ingredients: [
+      '4 filés de peito de frango',
+      'Suco de 1 limão',
+      '2 colheres de azeite',
+      'Ervas secas a gosto',
+      'Sal e pimenta',
+    ],
+    materials: ['Frigideira grill', 'Tábua', 'Pinça'],
+    steps: [
+      {
+        id: '3-1',
+        order: 1,
+        instruction: 'Tempere os filés com limão, azeite, ervas, sal e pimenta.',
+      },
+      {
+        id: '3-2',
+        order: 2,
+        instruction: 'Aqueça a frigideira em fogo médio-alto.',
+      },
+      {
+        id: '3-3',
+        order: 3,
+        instruction: 'Grelhe cada filé por 5 a 6 minutos de cada lado.',
+        recoveryInstruction: 'Se estiver cru por dentro, reduza o fogo e tampe por 3 minutos.',
+      },
+    ],
+  },
+  {
+    id: '4',
+    title: 'Salada Caesar',
+    category: 'saladas',
+    festivity: 'dia-a-dia',
+    prepTimeMinutes: 20,
+    popularity: 75,
+    ingredients: [
+      '1 maço de alface romana',
+      'Croutons',
+      'Parmesão ralado',
+      'Molho caesar',
+      'Peito de frango grelhado (opcional)',
+    ],
+    materials: ['Tigela grande', 'Faca', 'Tábua'],
+    steps: [
+      {
+        id: '4-1',
+        order: 1,
+        instruction: 'Lave e seque bem a alface. Corte em pedaços médios.',
+      },
+      {
+        id: '4-2',
+        order: 2,
+        instruction: 'Misture alface, croutons e molho na tigela.',
+      },
+      {
+        id: '4-3',
+        order: 3,
+        instruction: 'Finalize com parmesão e frango grelhado fatiado, se desejar.',
+      },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Panetone Trufado',
+    category: 'bolos',
+    festivity: 'natal',
+    prepTimeMinutes: 30,
+    popularity: 70,
+    ingredients: [
+      '1 panetone médio',
+      '200g de chocolate meio amargo',
+      '100ml de creme de leite',
+      'Frutas cristalizadas para decorar',
+    ],
+    materials: ['Panela', 'Espátula', 'Prato de servir'],
+    steps: [
+      {
+        id: '5-1',
+        order: 1,
+        instruction: 'Corte o panetone ao meio horizontalmente.',
+      },
+      {
+        id: '5-2',
+        order: 2,
+        instruction: 'Derreta o chocolate com o creme de leite em banho-maria.',
+      },
+      {
+        id: '5-3',
+        order: 3,
+        instruction: 'Recheie o panetone, cubra com ganache e decore.',
+      },
+    ],
+    isFavorite: true,
+  },
+  {
+    id: '6',
+    title: 'Mousse de Maracujá',
+    category: 'sobremesas',
+    festivity: 'pascoa',
+    prepTimeMinutes: 25,
+    popularity: 90,
+    ingredients: [
+      '1 lata de leite condensado',
+      '1 lata de creme de leite',
+      '1/2 xícara de suco de maracujá concentrado',
+      'Polpa de 2 maracujás',
+    ],
+    materials: ['Liquidificador', 'Taças', 'Geladeira'],
+    steps: [
+      {
+        id: '6-1',
+        order: 1,
+        instruction: 'Bata todos os ingredientes no liquidificador por 2 minutos.',
+      },
+      {
+        id: '6-2',
+        order: 2,
+        instruction: 'Distribua nas taças e leve à geladeira por no mínimo 4 horas.',
+      },
+    ],
+  },
+];
