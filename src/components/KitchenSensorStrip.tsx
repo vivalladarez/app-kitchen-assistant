@@ -25,12 +25,6 @@ export function KitchenSensorStrip({ sensors, compact = false }: KitchenSensorSt
       active: sensors.pan.alert,
     },
     {
-      key: 'ambient' as const,
-      label: KITCHEN_SENSOR_LABELS.ambient,
-      value: `${Math.round(sensors.ambient.celsius)}°C · ${Math.round(sensors.ambient.humidity)}%`,
-      active: sensors.ambient.alert,
-    },
-    {
       key: 'color' as const,
       label: KITCHEN_SENSOR_LABELS.color,
       value: KITCHEN_COLOR_LABELS[sensors.color.level],
@@ -45,13 +39,12 @@ export function KitchenSensorStrip({ sensors, compact = false }: KitchenSensorSt
   ];
 
   return (
-    <View style={[styles.grid, compact && styles.gridCompact]}>
+    <View style={[styles.row, compact && styles.rowCompact]}>
       {items.map((item) => (
         <View
           key={item.key}
           style={[
             styles.chip,
-            compact && styles.chipCompact,
             {
               backgroundColor: colors.surface,
               borderColor: item.active ? colors.accent : colors.border,
@@ -84,25 +77,22 @@ export function KitchenSensorStrip({ sensors, compact = false }: KitchenSensorSt
 }
 
 const styles = StyleSheet.create({
-  grid: {
+  row: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     gap: spacing.sm,
     marginBottom: spacing.md,
   },
-  gridCompact: {
+  rowCompact: {
     marginBottom: spacing.sm,
   },
   chip: {
-    width: '48%',
+    flex: 1,
     borderRadius: 12,
     borderWidth: 1,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
     alignItems: 'center',
-  },
-  chipCompact: {
-    paddingVertical: spacing.xs,
   },
   chipLabel: {
     fontWeight: '600',

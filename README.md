@@ -108,7 +108,6 @@ Resposta JSON obrigatória:
   "state": "idle",
   "sensors": {
     "pan": { "id": "slider", "celsius": 52, "alert": true },
-    "ambient": { "id": "dht11", "celsius": 27, "humidity": 58, "alert": false },
     "color": { "id": "tcs3200", "level": "golden", "alert": false },
     "sound": { "id": "sound", "level": 25, "alert": false }
   }
@@ -121,25 +120,23 @@ Resposta JSON obrigatória:
 | `temperature` | number | Temperatura da **panela** em °C (atalho = `sensors.pan.celsius`) |
 | `state` | string | `"idle"` \| `"preparing"` \| `"alert"` |
 | `sensors.pan` | object | Slider no Pico W — alerta se `celsius > 40` |
-| `sensors.ambient` | object | DHT11 na Micro:bit — temp/umidade; alerta se `celsius ≥ 35` |
-| `sensors.color` | object | TCS3200 — `level`: `light` \| `golden` \| `dark` \| `burned`; alerta em `dark`/`burned` |
+| `sensors.color` | object | TCS3200 na Micro:bit — `level`: `light` \| `golden` \| `dark` \| `burned`; alerta em `dark`/`burned` |
 | `sensors.sound` | object | Sensor de som no Pico W — `level` 0–100; alerta se `≥ 70` |
 
 Simular no mock (query string):
 
 ```http
-GET /status?pan=52&ambient=27&humidity=58&color=golden&sound=25
+GET /status?pan=52&color=golden&sound=25
 GET /status?pan=55&color=burned&sound=85
 ```
 
 ---
 
-### Sensores na cozinha conectada
+### Sensores na cozinha conectada (3)
 
 | Chip | Hardware | Controlador | Alerta |
 |------|----------|-------------|--------|
 | **Panela** | Slider | Pico W | > 40 °C |
-| **Ambiente** | DHT11 | Micro:bit | ≥ 35 °C |
 | **Cor** | TCS3200 | Micro:bit | `dark` / `burned` |
 | **Som** | Sensor de som | Pico W | ≥ 70% |
 
@@ -157,7 +154,7 @@ GET /status?pan=55&color=burned&sound=85
 ```
 ┌─────────────┐     serial/USB      ┌──────────────┐     Wi‑Fi      ┌─────────┐
 │ Micro:bit   │ ──────────────────► │  PC (Python  │ ◄────────────► │  App    │
-│ DHT11 + Cor │   JSON linha/serial │  gateway     │   :8770      │  Expo   │
+│ TCS3200     │   JSON linha/serial │  gateway     │   :8770      │  Expo   │
 └─────────────┘                     │  server.py   │              └─────────┘
                                     └──────▲───────┘
 ┌─────────────┐     Wi‑Fi ou serial         │
@@ -168,8 +165,8 @@ GET /status?pan=55&color=burned&sound=85
 
 **Opção simples (recomendada):**
 
-1. **Micro:bit** lê DHT11 + TCS3200 → envia JSON por **USB serial** para o PC.
-2. **Pico W** lê slider + sensor de som no **ADC** → serial ou Wi‑Fi para o PC.
+1. **Micro:bit** lê **TCS3200** → envia JSON por **USB serial** para o PC.
+2. **Pico W** lê **slider** + **sensor de som** no **ADC** → serial ou Wi‑Fi para o PC.
 3. **PC** roda `server/kitchen/server.py` e publica **`GET /status`** na porta **8770**.
 
 Firmware de referência: parta de `server/kitchen/server.py` (valores mock) e substitua por leituras reais mantendo o **mesmo JSON**.
@@ -190,7 +187,7 @@ GET http://<IP-DO-GATEWAY>:8770/health
 | URL/porta do gateway | `src/constants/kitchenConfig.ts` |
 | Poll online/offline na UI | `src/hooks/useKitchenConnection.ts` |
 | Badge **Cozinha online/offline** | `src/components/KitchenStatusBadge.tsx` |
-| Chips dos 4 sensores | `src/components/KitchenSensorStrip.tsx` |
+| Chips dos 3 sensores | `src/components/KitchenSensorStrip.tsx` |
 | Mapa hardware ↔ função | `src/constants/kitchenSensors.ts` |
 
 ### Como substituir o mock pelo hardware real
@@ -212,8 +209,7 @@ GET http://<IP-DO-GATEWAY>:8770/health
 - Panela `> 40 °C` → *"Cuidado, a panela está quente."*
 - Cor `dark` / `burned` → *"Risco de queimar!"*
 - Som `≥ 70%` → *"Som intenso — verifique a panela."*
-- Ambiente `≥ 35 °C` → *"Ambiente muito quente."*
-- Comando de voz **Temperatura** usa `checkPanTemperature()` com prioridade: cor → som → panela → ambiente.
+- Comando de voz **Temperatura** usa `checkPanTemperature()` com prioridade: cor → som → panela.
 
 ### TTS (voz do assistente) — separado do hardware
 

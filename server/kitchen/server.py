@@ -1,11 +1,10 @@
 """
-Gateway mock da cozinha conectada — 4 sensores simulados.
+Gateway mock da cozinha conectada — 3 sensores simulados.
 
 Sensores (lab IHM):
-  1. pan     → Potenciômetro slider no Pico W (temperatura panela)
-  2. ambient → DHT11 na Micro:bit (temp/umidade ambiente)
-  3. color   → TCS3200 na Micro:bit (claro → dourado → escuro → queimado)
-  4. sound   → Sensor de som no Pico W (chiado/estalo)
+  1. pan   → Potenciômetro slider no Pico W (temperatura panela)
+  2. color → TCS3200 na Micro:bit (claro → dourado → escuro → queimado)
+  3. sound → Sensor de som no Pico W (chiado/estalo)
 
 Uso:
   pip install flask flask-cors
@@ -13,7 +12,7 @@ Uso:
 
 Demo com valores simulados:
   GET /status
-  GET /status?pan=52&ambient=27&humidity=58&color=golden&sound=25
+  GET /status?pan=52&color=golden&sound=25
   GET /status?pan=55&color=burned&sound=85
 """
 
@@ -25,7 +24,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 PORT = 8770
-AMBIENT_HEAT_ALERT_CELSIUS = 35
 SOUND_ALERT_LEVEL = 70
 COLOR_ALERT_LEVELS = {"dark", "burned"}
 VALID_COLOR_LEVELS = {"light", "golden", "dark", "burned"}
@@ -37,8 +35,6 @@ CORS(app)
 
 def build_status(
     pan_celsius: float = 52,
-    ambient_celsius: float = 27,
-    humidity: float = 58,
     color_level: str = "golden",
     sound_level: float = 25,
     state: str = "idle",
@@ -47,10 +43,9 @@ def build_status(
         color_level = "golden"
 
     pan_alert = pan_celsius > 40
-    ambient_alert = ambient_celsius >= AMBIENT_HEAT_ALERT_CELSIUS
     color_alert = color_level in COLOR_ALERT_LEVELS
     sound_alert = sound_level >= SOUND_ALERT_LEVEL
-    has_alert = pan_alert or ambient_alert or color_alert or sound_alert
+    has_alert = pan_alert or color_alert or sound_alert
 
     return {
         "online": True,
@@ -61,12 +56,6 @@ def build_status(
                 "id": "slider",
                 "celsius": pan_celsius,
                 "alert": pan_alert,
-            },
-            "ambient": {
-                "id": "dht11",
-                "celsius": ambient_celsius,
-                "humidity": humidity,
-                "alert": ambient_alert,
             },
             "color": {
                 "id": "tcs3200",
@@ -84,19 +73,17 @@ def build_status(
 
 @app.get("/health")
 def health():
-    return jsonify({"ok": True, "sensors": ["pan", "ambient", "color", "sound"]})
+    return jsonify({"ok": True, "sensors": ["pan", "color", "sound"]})
 
 
 @app.get("/status")
 def status():
     pan = request.args.get("pan", type=float, default=52.0)
-    ambient = request.args.get("ambient", type=float, default=27.0)
-    humidity = request.args.get("humidity", type=float, default=58.0)
     color = request.args.get("color", default="golden")
     sound = request.args.get("sound", type=float, default=25.0)
     state = request.args.get("state", default="idle")
 
-    return jsonify(build_status(pan, ambient, humidity, color, sound, state))
+    return jsonify(build_status(pan, color, sound, state))
 
 
 if __name__ == "__main__":

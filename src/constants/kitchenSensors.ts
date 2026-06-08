@@ -1,14 +1,9 @@
-import {
-  AMBIENT_HEAT_ALERT_CELSIUS,
-  KitchenColorLevel,
-  SOUND_ALERT_LEVEL,
-} from '../types/kitchen';
+import { KitchenColorLevel, SOUND_ALERT_LEVEL } from '../types/kitchen';
 
-export type KitchenSensorId = 'pan' | 'ambient' | 'color' | 'sound';
+export type KitchenSensorId = 'pan' | 'color' | 'sound';
 
 export const KITCHEN_SENSOR_LABELS: Record<KitchenSensorId, string> = {
   pan: 'Panela',
-  ambient: 'Ambiente',
   color: 'Cor',
   sound: 'Som',
 };
@@ -25,11 +20,6 @@ export const KITCHEN_HARDWARE_MAP = {
     component: 'Potenciômetro linear (slider)',
     controller: 'Raspberry Pi Pico W (ADC)',
     role: 'Simula temperatura da panela (20–80 °C). Alerta no app se > 40 °C.',
-  },
-  ambient: {
-    component: 'DHT11',
-    controller: 'BBC Micro:bit V2 (+ adaptador Robocore)',
-    role: `Temperatura e umidade do ar. Alerta se ambiente > ${AMBIENT_HEAT_ALERT_CELSIUS} °C.`,
   },
   color: {
     component: 'TCS3200 / TCS230',

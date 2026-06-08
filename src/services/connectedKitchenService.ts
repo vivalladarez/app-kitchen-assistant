@@ -1,6 +1,5 @@
 import { getKitchenRuntimeConfig } from './kitchenRuntimeConfig';
 import {
-  AMBIENT_HEAT_ALERT_CELSIUS,
   COLOR_ALERT_LEVELS,
   KitchenColorLevel,
   KitchenDeviceState,
@@ -39,18 +38,12 @@ function parseColorLevel(value: unknown): KitchenColorLevel {
   return 'golden';
 }
 
-function buildMockSensors(panCelsius: number, ambientCelsius = 26): KitchenSensors {
+function buildMockSensors(panCelsius: number): KitchenSensors {
   return {
     pan: {
       id: 'simulated',
       celsius: panCelsius,
       alert: panCelsius > 40,
-    },
-    ambient: {
-      id: 'dht11',
-      celsius: ambientCelsius,
-      humidity: 58,
-      alert: ambientCelsius >= AMBIENT_HEAT_ALERT_CELSIUS,
     },
     color: {
       id: 'tcs3200',
@@ -76,13 +69,10 @@ function parseSensors(
   }
 
   const pan = sensors.pan ?? {};
-  const ambient = sensors.ambient ?? {};
   const color = sensors.color ?? {};
   const sound = sensors.sound ?? {};
 
   const panTemp = typeof pan.celsius === 'number' ? pan.celsius : panCelsius;
-  const ambientTemp =
-    typeof ambient.celsius === 'number' ? ambient.celsius : 26;
   const colorLevel = parseColorLevel(color.level);
   const soundLevel =
     typeof sound.level === 'number'
@@ -94,15 +84,6 @@ function parseSensors(
       id: pan.id === 'slider' ? 'slider' : 'simulated',
       celsius: panTemp,
       alert: typeof pan.alert === 'boolean' ? pan.alert : panTemp > 40,
-    },
-    ambient: {
-      id: 'dht11',
-      celsius: ambientTemp,
-      humidity: typeof ambient.humidity === 'number' ? ambient.humidity : 58,
-      alert:
-        typeof ambient.alert === 'boolean'
-          ? ambient.alert
-          : ambientTemp >= AMBIENT_HEAT_ALERT_CELSIUS,
     },
     color: {
       id: 'tcs3200',
@@ -128,10 +109,7 @@ function resolveDeviceState(
   state: unknown,
 ): KitchenDeviceState {
   const hasAlert =
-    sensors.pan.alert ||
-    sensors.ambient.alert ||
-    sensors.color.alert ||
-    sensors.sound.alert;
+    sensors.pan.alert || sensors.color.alert || sensors.sound.alert;
 
   if (hasAlert || state === 'alert') {
     return 'alert';
@@ -211,7 +189,7 @@ export const connectedKitchenService = {
   getTemperature: (): number => cachedStatus.temperature,
 
   checkPanTemperature: (): string => {
-    const { pan, ambient, color, sound } = cachedStatus.sensors;
+    const { pan, color, sound } = cachedStatus.sensors;
     const temp = pan.celsius;
 
     if (color.alert || color.level === 'burned') {
@@ -226,11 +204,7 @@ export const connectedKitchenService = {
       return 'Cuidado, a panela está quente.';
     }
 
-    if (ambient.alert) {
-      return `Temperatura da panela: ${temp}°C. Ambiente muito quente (${Math.round(ambient.celsius)}°C) — verifique fogão ou forno.`;
-    }
-
-    return `Panela ${temp}°C. Ambiente ${Math.round(ambient.celsius)}°C, umidade ${Math.round(ambient.humidity)}%. Cor ${KITCHEN_COLOR_LABELS[color.level].toLowerCase()}, som ${sound.level}%.`;
+    return `Panela ${temp}°C. Cor ${KITCHEN_COLOR_LABELS[color.level].toLowerCase()}, som ${sound.level}%.`;
   },
 
   getAvailableIngredients: (): string[] => [...MOCK_AVAILABLE_INGREDIENTS],
