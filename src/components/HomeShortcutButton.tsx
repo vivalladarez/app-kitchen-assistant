@@ -1,10 +1,11 @@
-import { Platform, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon, AppIconName } from './AppIcon';
 
 interface HomeShortcutButtonProps {
-  icon: string;
+  icon: AppIconName;
   label: string;
   onPress: () => void;
   variant?: 'grid' | 'wide';
@@ -39,9 +40,7 @@ export function HomeShortcutButton({
       ]}
     >
       <View style={[styles.iconBox, isWide && styles.iconBoxWide]}>
-        <Text style={styles.icon} allowFontScaling={false}>
-          {icon}
-        </Text>
+        <AppIcon name={icon} size={22} color={colors.primary} />
       </View>
       <Text
         style={[
@@ -87,12 +86,6 @@ const styles = StyleSheet.create({
   iconBoxWide: {
     marginBottom: 0,
     marginRight: spacing.sm,
-  },
-  icon: {
-    fontSize: 22,
-    lineHeight: Platform.OS === 'android' ? 26 : 24,
-    textAlign: 'center',
-    ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
   },
   label: {
     fontWeight: '600',

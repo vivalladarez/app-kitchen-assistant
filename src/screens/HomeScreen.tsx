@@ -61,7 +61,7 @@ export function HomeScreen({ navigation }: Props) {
         <View style={styles.shortcutRow}>
           <View style={styles.shortcutCell}>
             <HomeShortcutButton
-              icon="★"
+              icon="star-outline"
               label="Favoritos"
               onPress={() => navigation.navigate('Favorites')}
             />
@@ -69,7 +69,7 @@ export function HomeScreen({ navigation }: Props) {
           <View style={styles.shortcutSpacer} />
           <View style={styles.shortcutCell}>
             <HomeShortcutButton
-              icon="🔍"
+              icon="search-outline"
               label="Buscar"
               onPress={() => navigation.navigate('Search')}
             />
@@ -79,7 +79,7 @@ export function HomeScreen({ navigation }: Props) {
         <View style={styles.shortcutRow}>
           <View style={styles.shortcutCell}>
             <HomeShortcutButton
-              icon="➕"
+              icon="add-circle-outline"
               label="Criar receita"
               onPress={() => navigation.navigate('CreateRecipe', undefined)}
             />
@@ -87,7 +87,7 @@ export function HomeScreen({ navigation }: Props) {
           <View style={styles.shortcutSpacer} />
           <View style={styles.shortcutCell}>
             <HomeShortcutButton
-              icon="⚙️"
+              icon="settings-outline"
               label="Configurações"
               onPress={() => navigation.navigate('Settings')}
             />
@@ -95,7 +95,7 @@ export function HomeScreen({ navigation }: Props) {
         </View>
 
         <HomeShortcutButton
-          icon="👤"
+          icon="person-outline"
           label="Cadastro"
           variant="wide"
           onPress={() => navigation.navigate('Register')}

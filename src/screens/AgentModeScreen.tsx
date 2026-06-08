@@ -14,6 +14,7 @@ import {
   AgentOrbButton,
   AgentRecipeBubble,
   AgentSuggestionChip,
+  AppIcon,
   KitchenStatusBadge,
   KitchenSensorStrip,
   SessionStatusBadge,
@@ -632,8 +633,9 @@ export function AgentModeScreen({ navigation }: Props) {
                   { color: colors.textSecondary, fontSize: typography.sm },
                 ]}
               >
-                Explorar catálogo completo →
+                Explorar catálogo completo
               </Text>
+              <AppIcon name="chevron-forward" size={16} color={colors.textSecondary} />
             </Pressable>
           </>
         )}
@@ -838,9 +840,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   catalogLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
     alignSelf: 'center',
     marginTop: spacing.xl,
     paddingVertical: spacing.sm,
+    gap: spacing.xs,
   },
   endLink: {
     alignSelf: 'center',

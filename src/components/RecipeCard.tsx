@@ -4,6 +4,7 @@ import { categoryLabels, festivityLabels } from '../constants/labels';
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
 import { Recipe } from '../types';
+import { AppIcon } from './AppIcon';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -50,9 +51,11 @@ export function RecipeCard({
             hitSlop={8}
             onPress={onToggleFavorite}
           >
-            <Text style={[styles.favoriteIcon, { color: colors.favorite }]}>
-              {recipe.isFavorite ? '★' : '☆'}
-            </Text>
+            <AppIcon
+              name={recipe.isFavorite ? 'star' : 'star-outline'}
+              size={22}
+              color={colors.favorite}
+            />
           </Pressable>
         )}
       </View>
@@ -63,9 +66,12 @@ export function RecipeCard({
         <Text style={[styles.time, { color: colors.primary, fontSize: typography.sm }]}>
           {recipe.prepTimeMinutes} min
         </Text>
-        <Text style={[styles.popularity, { color: colors.textSecondary, fontSize: typography.sm }]}>
-          ★ {recipe.popularity}
-        </Text>
+        <View style={styles.popularity}>
+          <AppIcon name="star" size={14} color={colors.textSecondary} />
+          <Text style={[styles.popularityText, { color: colors.textSecondary, fontSize: typography.sm }]}>
+            {recipe.popularity}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -88,19 +94,24 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: '600',
   },
-  favoriteIcon: {
-    fontSize: 22,
-  },
   meta: {
     marginTop: spacing.xs,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: spacing.sm,
   },
   time: {
     fontWeight: '500',
   },
-  popularity: {},
+  popularity: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  popularityText: {
+    fontWeight: '500',
+  },
 });

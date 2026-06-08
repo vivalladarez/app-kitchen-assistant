@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { PrimaryButton } from '../components';
+import { PrimaryButton, AppIcon } from '../components';
 import { colors, spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
 import { RootStackParamList } from '../types';
@@ -118,7 +118,7 @@ function CheckRow({
       style={[styles.row, checked && styles.rowChecked]}
     >
       <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
-        {checked && <Text style={styles.checkmark}>✓</Text>}
+        {checked && <AppIcon name="checkmark" size={14} color="#FFFFFF" />}
       </View>
       <Text style={[styles.rowLabel, checked && styles.rowLabelChecked]}>{label}</Text>
     </Pressable>
@@ -189,11 +189,6 @@ const styles = StyleSheet.create({
   checkboxChecked: {
     backgroundColor: colors.success,
     borderColor: colors.success,
-  },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
   },
   rowLabel: {
     flex: 1,

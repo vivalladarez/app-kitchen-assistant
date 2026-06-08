@@ -1,7 +1,8 @@
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon } from './AppIcon';
 
 interface AgentOrbButtonProps {
   isListening: boolean;
@@ -54,9 +55,11 @@ export function AgentOrbButton({
           isListening && { backgroundColor: colors.accent, borderColor: colors.accent },
         ]}
       >
-        <Text style={styles.icon} allowFontScaling={false}>
-          {isListening ? '◉' : '🎙️'}
-        </Text>
+        <AppIcon
+          name={isListening ? 'stop-circle' : 'mic-outline'}
+          size={42}
+          color="#FFFFFF"
+        />
       </Pressable>
 
       <Text style={[styles.hint, { color: colors.textSecondary, fontSize: typography.sm }]}>
@@ -105,12 +108,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
-  },
-  icon: {
-    fontSize: 42,
-    lineHeight: Platform.OS === 'android' ? 50 : 46,
-    textAlign: 'center',
-    ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
   },
   hint: {
     position: 'absolute',

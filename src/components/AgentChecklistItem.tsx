@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon } from './AppIcon';
 
 interface AgentChecklistItemProps {
   label: string;
@@ -40,7 +41,7 @@ export function AgentChecklistItem({
           },
         ]}
       >
-        {checked && <Text style={styles.checkmark}>✓</Text>}
+        {checked && <AppIcon name="checkmark" size={14} color="#FFFFFF" />}
       </View>
       <Text
         style={[
@@ -75,11 +76,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.sm,
-  },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
   },
   label: {
     flex: 1,

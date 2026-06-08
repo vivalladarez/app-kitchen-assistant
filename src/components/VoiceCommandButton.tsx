@@ -4,6 +4,7 @@ import { voiceCommandLabels } from '../constants/voiceCommands';
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
 import { VoiceCommand } from '../types';
+import { AppIcon } from './AppIcon';
 
 interface VoiceCommandButtonProps {
   command: VoiceCommand;
@@ -34,7 +35,7 @@ export function VoiceCommandButton({
         disabled && styles.disabled,
       ]}
     >
-      <Text style={styles.icon}>🎤</Text>
+      <AppIcon name="mic-outline" size={20} color={colors.primary} style={styles.icon} />
       <Text
         style={[
           styles.label,
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   icon: {
-    fontSize: 18,
     marginBottom: spacing.xs,
   },
   label: {

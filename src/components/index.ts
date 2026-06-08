@@ -1,3 +1,5 @@
+export { AppIcon } from './AppIcon';
+export type { AppIconName } from './AppIcon';
 export { AgentChecklistItem } from './AgentChecklistItem';
 export { AgentModeHero } from './AgentModeHero';
 export { AgentOrbButton } from './AgentOrbButton';

@@ -1,7 +1,8 @@
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon } from './AppIcon';
 
 interface AgentModeHeroProps {
   onPress: () => void;
@@ -37,9 +38,7 @@ export function AgentModeHero({ onPress }: AgentModeHeroProps) {
         <View style={[styles.glow, { backgroundColor: colors.primary }]} />
 
         <View style={[styles.iconRing, { borderColor: heroText }]}>
-          <Text style={styles.icon} allowFontScaling={false}>
-            🎙️
-          </Text>
+          <AppIcon name="mic-outline" size={40} color={heroText} />
         </View>
 
         <Text style={[styles.title, { color: heroText, fontSize: typography.xl + 2 }]}>
@@ -51,7 +50,7 @@ export function AgentModeHero({ onPress }: AgentModeHeroProps) {
 
         <View style={[styles.cta, { backgroundColor: colors.accent }]}>
           <Text style={[styles.ctaText, { fontSize: typography.md }]}>Iniciar</Text>
-          <Text style={styles.ctaArrow}>→</Text>
+          <AppIcon name="arrow-forward" size={18} color="#FFFFFF" />
         </View>
       </View>
     </Pressable>
@@ -96,12 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     backgroundColor: 'rgba(255,255,255,0.12)',
   },
-  icon: {
-    fontSize: 40,
-    lineHeight: Platform.OS === 'android' ? 48 : 44,
-    textAlign: 'center',
-    ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
-  },
   title: {
     fontWeight: '800',
     textAlign: 'center',
@@ -123,17 +116,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: 999,
     minWidth: 140,
+    gap: spacing.sm,
   },
   ctaText: {
     color: '#FFFFFF',
     fontWeight: '700',
-    marginRight: spacing.sm,
-  },
-  ctaArrow: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-    lineHeight: Platform.OS === 'android' ? 22 : 18,
-    ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
   },
 });

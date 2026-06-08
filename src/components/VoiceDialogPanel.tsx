@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon, AppIconName } from './AppIcon';
 
 interface VoiceDialogPanelProps {
   isAvailable: boolean;
@@ -11,10 +12,13 @@ interface VoiceDialogPanelProps {
   onMicPress: () => void;
 }
 
-const stateLabels = {
-  speaking: '🗣️ Assistente falando...',
-  listening: '👂 Ouvindo você...',
-  waiting: '💬 Diga um comando de voz',
+const stateConfig: Record<
+  VoiceDialogPanelProps['assistantState'],
+  { icon: AppIconName; label: string }
+> = {
+  speaking: { icon: 'volume-high-outline', label: 'Assistente falando...' },
+  listening: { icon: 'mic-outline', label: 'Ouvindo você...' },
+  waiting: { icon: 'chatbubble-ellipses-outline', label: 'Diga um comando de voz' },
 };
 
 export function VoiceDialogPanel({
@@ -26,6 +30,7 @@ export function VoiceDialogPanel({
 }: VoiceDialogPanelProps) {
   const { theme, typography } = useSettings();
   const { colors } = theme;
+  const state = stateConfig[assistantState];
 
   if (!isAvailable) {
     return (
@@ -59,9 +64,12 @@ export function VoiceDialogPanel({
         },
       ]}
     >
-      <Text style={[styles.state, { color: colors.primary, fontSize: typography.md }]}>
-        {stateLabels[assistantState]}
-      </Text>
+      <View style={styles.stateRow}>
+        <AppIcon name={state.icon} size={20} color={colors.primary} />
+        <Text style={[styles.state, { color: colors.primary, fontSize: typography.md }]}>
+          {state.label}
+        </Text>
+      </View>
 
       {transcript ? (
         <View style={[styles.bubble, { backgroundColor: colors.background }]}>
@@ -95,7 +103,11 @@ export function VoiceDialogPanel({
           },
         ]}
       >
-        <Text style={styles.micIcon}>🎤</Text>
+        <AppIcon
+          name={assistantState === 'listening' ? 'stop' : 'mic'}
+          size={28}
+          color="#FFFFFF"
+        />
         <Text style={[styles.micLabel, { fontSize: typography.sm }]}>
           {assistantState === 'listening' ? 'Parar' : 'Falar'}
         </Text>
@@ -114,9 +126,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: spacing.sm,
   },
+  stateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
   state: {
     fontWeight: '700',
-    marginBottom: spacing.sm,
     textAlign: 'center',
   },
   bubble: {
@@ -145,9 +163,6 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginTop: spacing.sm,
-  },
-  micIcon: {
-    fontSize: 28,
   },
   micLabel: {
     color: '#FFFFFF',

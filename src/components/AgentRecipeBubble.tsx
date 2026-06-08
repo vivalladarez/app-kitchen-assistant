@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { AppIcon } from './AppIcon';
 
 interface AgentRecipeBubbleProps {
   title: string;
@@ -34,7 +35,12 @@ export function AgentRecipeBubble({
       ]}
     >
       {isFavorite && (
-        <Text style={[styles.star, { color: colors.favorite }]}>★</Text>
+        <AppIcon
+          name="star"
+          size={12}
+          color={colors.favorite}
+          style={styles.star}
+        />
       )}
       <Text
         style={[styles.title, { color: colors.text, fontSize: typography.sm }]}
@@ -60,7 +66,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   star: {
-    fontSize: 12,
     marginBottom: spacing.xs,
   },
   title: {

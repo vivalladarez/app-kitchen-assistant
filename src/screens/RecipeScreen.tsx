@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { PrimaryButton } from '../components';
+import { PrimaryButton, AppIcon } from '../components';
 import { categoryLabels, festivityLabels } from '../constants/labels';
 import { colors, spacing } from '../constants/theme';
 import { useRecipes } from '../context/RecipeContext';
@@ -27,17 +27,23 @@ export function RecipeScreen({ navigation, route }: Props) {
       <View style={styles.header}>
         <Text style={styles.title}>{recipe.title}</Text>
         <PrimaryButton
-          title={recipe.isFavorite ? '★ Favorito' : '☆ Favoritar'}
+          title={recipe.isFavorite ? 'Favorito' : 'Favoritar'}
           variant="outline"
           style={styles.favButton}
           onPress={() => toggleFavorite(recipe.id)}
         />
       </View>
 
-      <Text style={styles.meta}>
-        {categoryLabels[recipe.category]} · {festivityLabels[recipe.festivity]} ·{' '}
-        {recipe.prepTimeMinutes} min · ★ {recipe.popularity}
-      </Text>
+      <View style={styles.metaRow}>
+        <Text style={styles.meta}>
+          {categoryLabels[recipe.category]} · {festivityLabels[recipe.festivity]} ·{' '}
+          {recipe.prepTimeMinutes} min
+        </Text>
+        <View style={styles.popularity}>
+          <AppIcon name="star" size={14} color={colors.textSecondary} />
+          <Text style={styles.meta}>{recipe.popularity}</Text>
+        </View>
+      </View>
 
       <Section title="Ingredientes">
         {recipe.ingredients.map((item, i) => (
@@ -130,10 +136,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     minHeight: 40,
   },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+    gap: spacing.sm,
+  },
   meta: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: spacing.lg,
+    flex: 1,
+  },
+  popularity: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   section: {
     marginBottom: spacing.lg,
