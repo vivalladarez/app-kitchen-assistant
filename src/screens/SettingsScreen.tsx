@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { FilterChip, SettingsOption, SettingsToggle } from '../components';
 import {
@@ -10,7 +10,9 @@ import {
   voiceProfileLabels,
 } from '../constants/settingsLabels';
 import { spacing } from '../constants/theme';
+import { resolveTtsServerBase } from '../constants/ttsConfig';
 import { useSettings } from '../context/SettingsContext';
+import { speechService } from '../services/speechService';
 import {
   AppTheme,
   DietaryRestriction,
@@ -113,6 +115,55 @@ export function SettingsScreen(_props: Props) {
       </View>
 
       <Text style={[styles.section, { color: colors.text, fontSize: typography.lg }]}>
+        Voz do PC (edge-tts)
+      </Text>
+
+      <SettingsToggle
+        label="Usar voz neural do PC"
+        description="Vozes pt-BR de alta qualidade via servidor local (porta 8765)"
+        value={settings.remoteTtsEnabled}
+        onValueChange={(v) => updateSettings({ remoteTtsEnabled: v })}
+      />
+
+      <SettingsOption
+        label="Endereço do servidor TTS"
+        description={
+          resolveTtsServerBase(settings) ??
+          'Auto: mesmo IP do Expo (deixe vazio) ou ex.: 192.168.1.10'
+        }
+      >
+        <TextInput
+          value={settings.ttsServerHost}
+          onChangeText={(ttsServerHost) => updateSettings({ ttsServerHost })}
+          placeholder="Auto"
+          placeholderTextColor={colors.textSecondary}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[
+            styles.hostInput,
+            {
+              color: colors.text,
+              borderColor: colors.border,
+              backgroundColor: colors.background,
+              fontSize: typography.sm,
+            },
+          ]}
+        />
+      </SettingsOption>
+
+      <SettingsOption
+        label="Testar voz selecionada"
+        description="Ouve uma frase com o perfil de voz atual"
+        onPress={() =>
+          speechService.speak('Olá! Sou seu assistente na cozinha conectada.', {
+            voiceProfile: settings.voiceProfile,
+          })
+        }
+      >
+        <Text style={{ color: colors.primary, fontWeight: '600' }}>Ouvir</Text>
+      </SettingsOption>
+
+      <Text style={[styles.section, { color: colors.text, fontSize: typography.lg }]}>
         Temas
       </Text>
 
@@ -197,5 +248,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: spacing.sm,
+  },
+  hostInput: {
+    minWidth: 120,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    textAlign: 'right',
   },
 });

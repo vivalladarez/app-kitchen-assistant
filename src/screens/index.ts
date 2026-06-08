@@ -1,3 +1,4 @@
+export { AgentModeScreen } from './AgentModeScreen';
 export { CheckIngredientsScreen } from './CheckIngredientsScreen';
 export { CreateRecipeScreen } from './CreateRecipeScreen';
 export { DialogModeScreen } from './DialogModeScreen';

@@ -37,6 +37,9 @@ yarn-error.*
 .env
 .env*.local
 
+# TTS server cache
+server/tts/cache/
+
 # TypeScript
 *.tsbuildinfo
 

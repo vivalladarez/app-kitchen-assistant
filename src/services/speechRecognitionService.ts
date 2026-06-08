@@ -1,65 +1,16 @@
-import {
-  ExpoSpeechRecognitionModule,
-  type ExpoSpeechRecognitionErrorEvent,
-  type ExpoSpeechRecognitionResultEvent,
-} from 'expo-speech-recognition';
+import Constants from 'expo-constants';
 
-const LOCALE = 'pt-BR';
+import { speechRecognitionService as stubService } from './speechRecognitionService.stub';
 
-export const speechRecognitionService = {
-  async isAvailable(): Promise<boolean> {
-    try {
-      return ExpoSpeechRecognitionModule.isRecognitionAvailable();
-    } catch {
-      return false;
-    }
-  },
+export type {
+  ExpoSpeechRecognitionErrorEvent,
+  ExpoSpeechRecognitionResultEvent,
+} from './speechRecognitionService.stub';
 
-  async requestPermissions() {
-    return ExpoSpeechRecognitionModule.requestPermissionsAsync();
-  },
+function loadNativeService() {
+  return require('./speechRecognitionService.impl')
+    .speechRecognitionService as typeof stubService;
+}
 
-  startListening() {
-    ExpoSpeechRecognitionModule.start({
-      lang: LOCALE,
-      interimResults: true,
-      continuous: false,
-      requiresOnDeviceRecognition: false,
-      addsPunctuation: true,
-    });
-  },
-
-  stopListening() {
-    try {
-      ExpoSpeechRecognitionModule.stop();
-    } catch {
-      // noop
-    }
-  },
-
-  abortListening() {
-    try {
-      ExpoSpeechRecognitionModule.abort();
-    } catch {
-      // noop
-    }
-  },
-
-  addResultListener(
-    handler: (event: ExpoSpeechRecognitionResultEvent) => void,
-  ) {
-    return ExpoSpeechRecognitionModule.addListener('result', handler);
-  },
-
-  addErrorListener(handler: (event: ExpoSpeechRecognitionErrorEvent) => void) {
-    return ExpoSpeechRecognitionModule.addListener('error', handler);
-  },
-
-  addEndListener(handler: () => void) {
-    return ExpoSpeechRecognitionModule.addListener('end', handler);
-  },
-
-  addStartListener(handler: () => void) {
-    return ExpoSpeechRecognitionModule.addListener('start', handler);
-  },
-};
+export const speechRecognitionService =
+  Constants.appOwnership === 'expo' ? stubService : loadNativeService();

@@ -13,7 +13,16 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Permita que o Cozinha Assistiva reconheça sua fala durante o preparo.",
+        "NSMicrophoneUsageDescription": "Permita que o Cozinha Assistiva use o microfone para comandos de voz.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      },
+      "bundleIdentifier": "com.vivalladares.appkitchenassistant"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +30,11 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png",
         "backgroundColor": "#E6F4FE"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,9 +46,17 @@
         {
           "microphonePermission": "Permita que o Cozinha Assistiva use o microfone para comandos de voz.",
           "speechRecognitionPermission": "Permita que o Cozinha Assistiva reconheça sua fala durante o preparo.",
-          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "dceb99f1-9e9f-494d-9477-f5af26e29af2"
+      }
+    },
+    "owner": "vivalladares"
   }
 }

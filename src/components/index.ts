@@ -1,4 +1,10 @@
+export { AgentChecklistItem } from './AgentChecklistItem';
+export { AgentModeHero } from './AgentModeHero';
+export { AgentOrbButton } from './AgentOrbButton';
+export { AgentRecipeBubble } from './AgentRecipeBubble';
+export { AgentSuggestionChip } from './AgentSuggestionChip';
 export { FilterChip } from './FilterChip';
+export { HomeShortcutButton } from './HomeShortcutButton';
 export { ListInput } from './ListInput';
 export { LoadingScreen } from './LoadingScreen';
 export { PrimaryButton } from './PrimaryButton';

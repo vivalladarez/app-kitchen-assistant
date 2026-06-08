@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { defaultSettings } from '../constants/defaultSettings';
+import { resolveTtsServerBase } from '../constants/ttsConfig';
 import {
   getFontScale,
   getThemeColors,
@@ -16,6 +17,7 @@ import {
   ThemeColors,
 } from '../constants/theme';
 import { storageService } from '../services/storageService';
+import { syncTtsRuntimeConfig } from '../services/ttsRuntimeConfig';
 import { AppSettings, UserProfile } from '../types';
 
 interface SettingsContextValue {
@@ -52,6 +54,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
     load();
   }, []);
+
+  useEffect(() => {
+    syncTtsRuntimeConfig(
+      settings.remoteTtsEnabled,
+      resolveTtsServerBase(settings),
+    );
+  }, [settings]);
 
   const persistSettings = useCallback(async (next: AppSettings) => {
     setSettings(next);

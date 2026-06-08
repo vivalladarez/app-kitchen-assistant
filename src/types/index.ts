@@ -68,6 +68,8 @@ export interface AppSettings {
   signLanguageEnabled: boolean;
   dietaryRestrictions: DietaryRestriction[];
   openInDialogMode: boolean;
+  remoteTtsEnabled: boolean;
+  ttsServerHost: string;
 }
 
 export type VoiceCommand =
@@ -82,6 +84,7 @@ export type VoiceCommand =
   | 'parar receita';
 
 export type RootStackParamList = {
+  AgentMode: undefined;
   Home: undefined;
   Favorites: undefined;
   Search: undefined;

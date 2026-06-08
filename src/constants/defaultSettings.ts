@@ -9,4 +9,6 @@ export const defaultSettings: AppSettings = {
   signLanguageEnabled: false,
   dietaryRestrictions: [],
   openInDialogMode: false,
+  remoteTtsEnabled: true,
+  ttsServerHost: '',
 };

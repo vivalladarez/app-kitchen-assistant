@@ -9,6 +9,7 @@ import {
   CreateRecipeScreen,
   DialogModeScreen,
   EditRecipeScreen,
+  AgentModeScreen,
   FavoritesScreen,
   HomeScreen,
   RecipeScreen,
@@ -44,6 +45,14 @@ function NavigationRoot() {
           name="Home"
           component={HomeScreen}
           options={{ title: 'Cozinha Assistiva' }}
+        />
+        <Stack.Screen
+          name="AgentMode"
+          component={AgentModeScreen}
+          options={{
+            title: 'Assistente',
+            headerShadowVisible: false,
+          }}
         />
         <Stack.Screen
           name="Search"
