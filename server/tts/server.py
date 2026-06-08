@@ -1,5 +1,5 @@
 """
-Servidor TTS local para o Cozinha Assistiva (Opção A — edge-tts).
+Servidor TTS local para o Cozinha Assistida (Opção A — edge-tts).
 
 Uso:
   pip install -r requirements.txt

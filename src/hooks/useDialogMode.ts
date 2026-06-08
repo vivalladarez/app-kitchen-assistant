@@ -149,11 +149,23 @@ export function useDialogMode(
           return { type: 'none' };
 
         case 'temperatura': {
-          const alert = connectedKitchenService.checkPanTemperature();
-          const temp = connectedKitchenService.getTemperature();
-          const msg = `${alert} (${temp}°C)`;
-          setStatusMessage(msg);
-          speechService.speak(alert, { voiceProfile: settings.voiceProfile });
+          void connectedKitchenService.fetchStatus().then((kitchenStatus) => {
+            if (!kitchenStatus.online) {
+              const offlineMsg =
+                'Cozinha offline. Exibindo temperatura simulada da panela.';
+              setStatusMessage(offlineMsg);
+              speechService.speak(offlineMsg, {
+                voiceProfile: settings.voiceProfile,
+              });
+              return;
+            }
+
+            const alert = connectedKitchenService.checkPanTemperature();
+            const temp = connectedKitchenService.getTemperature();
+            const msg = `${alert} (${temp}°C)`;
+            setStatusMessage(msg);
+            speechService.speak(alert, { voiceProfile: settings.voiceProfile });
+          });
           return { type: 'none' };
         }
 

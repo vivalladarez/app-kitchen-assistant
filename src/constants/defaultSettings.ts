@@ -11,4 +11,6 @@ export const defaultSettings: AppSettings = {
   openInDialogMode: false,
   remoteTtsEnabled: true,
   ttsServerHost: '',
+  kitchenConnectionEnabled: true,
+  kitchenServerHost: '',
 };

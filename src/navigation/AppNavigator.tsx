@@ -44,7 +44,7 @@ function NavigationRoot() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ title: 'Cozinha Assistiva' }}
+          options={{ title: 'Cozinha Assistida' }}
         />
         <Stack.Screen
           name="AgentMode"

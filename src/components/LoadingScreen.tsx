@@ -15,7 +15,7 @@ export function LoadingScreen() {
           { color: theme.colors.text, fontSize: typography.md },
         ]}
       >
-        Carregando Cozinha Assistiva...
+        Carregando Cozinha Assistida...
       </Text>
     </View>
   );

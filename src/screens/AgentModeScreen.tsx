@@ -14,6 +14,9 @@ import {
   AgentOrbButton,
   AgentRecipeBubble,
   AgentSuggestionChip,
+  KitchenStatusBadge,
+  KitchenSensorStrip,
+  SessionStatusBadge,
 } from '../components';
 import {
   dialogVoiceCommands,
@@ -21,6 +24,7 @@ import {
 } from '../constants/voiceCommands';
 import { spacing } from '../constants/theme';
 import { useDialogMode } from '../hooks/useDialogMode';
+import { useKitchenConnection } from '../hooks/useKitchenConnection';
 import { useVoiceDialog } from '../hooks/useVoiceDialog';
 import { useRecipes } from '../context/RecipeContext';
 import { useSettings } from '../context/SettingsContext';
@@ -51,6 +55,7 @@ interface CheckItem {
 export function AgentModeScreen({ navigation }: Props) {
   const { user, settings, theme, typography } = useSettings();
   const { colors } = theme;
+  const kitchen = useKitchenConnection(settings.kitchenConnectionEnabled);
   const { recipes, getRecipeById, getFavoriteRecipes } = useRecipes();
 
   const [phase, setPhase] = useState<AgentPhase>('idle');
@@ -404,7 +409,7 @@ export function AgentModeScreen({ navigation }: Props) {
             : 'Em preparo'
         : phase === 'finished'
           ? 'Receita concluída'
-          : 'Assistente online';
+          : '';
 
   const bubbleText =
     phase === 'idle'
@@ -447,24 +452,38 @@ export function AgentModeScreen({ navigation }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.statusRow}>
-          <View
-            style={[
-              styles.statusDot,
-              {
-                backgroundColor:
-                  phase === 'finished' ? colors.accent : colors.success,
-              },
-            ]}
+          <KitchenStatusBadge
+            online={kitchen.online}
+            isChecking={kitchen.isChecking}
           />
+          {sessionStatus ? (
+            <SessionStatusBadge
+              label={sessionStatus}
+              tone={
+                phase === 'finished'
+                  ? 'accent'
+                  : phase === 'cooking'
+                    ? 'success'
+                    : 'default'
+              }
+            />
+          ) : null}
+        </View>
+
+        {settings.kitchenConnectionEnabled && !kitchen.isChecking && !kitchen.online && (
           <Text
             style={[
-              styles.statusLabel,
+              styles.offlineHint,
               { color: colors.textSecondary, fontSize: typography.xs },
             ]}
           >
-            {sessionStatus}
+            Embarcados offline — temperatura e sensores em modo simulado.
           </Text>
-        </View>
+        )}
+
+        {kitchen.online && !kitchen.isChecking && (
+          <KitchenSensorStrip sensors={kitchen.sensors} />
+        )}
 
         {activeRecipe && phase !== 'idle' && (
           <View style={styles.recipeHeader}>
@@ -745,19 +764,14 @@ const styles = StyleSheet.create({
   statusRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    marginBottom: spacing.sm,
+  },
+  offlineHint: {
+    textAlign: 'center',
     marginBottom: spacing.md,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: spacing.sm,
-  },
-  statusLabel: {
-    fontWeight: '600',
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
+    lineHeight: 18,
   },
   recipeHeader: {
     marginBottom: spacing.md,

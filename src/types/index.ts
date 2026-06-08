@@ -70,6 +70,8 @@ export interface AppSettings {
   openInDialogMode: boolean;
   remoteTtsEnabled: boolean;
   ttsServerHost: string;
+  kitchenConnectionEnabled: boolean;
+  kitchenServerHost: string;
 }
 
 export type VoiceCommand =

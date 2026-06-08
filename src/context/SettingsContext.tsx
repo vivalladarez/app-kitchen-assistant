@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { defaultSettings } from '../constants/defaultSettings';
+import { resolveKitchenServerBase } from '../constants/kitchenConfig';
 import { resolveTtsServerBase } from '../constants/ttsConfig';
 import {
   getFontScale,
@@ -17,6 +18,7 @@ import {
   ThemeColors,
 } from '../constants/theme';
 import { storageService } from '../services/storageService';
+import { syncKitchenRuntimeConfig } from '../services/kitchenRuntimeConfig';
 import { syncTtsRuntimeConfig } from '../services/ttsRuntimeConfig';
 import { AppSettings, UserProfile } from '../types';
 
@@ -59,6 +61,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     syncTtsRuntimeConfig(
       settings.remoteTtsEnabled,
       resolveTtsServerBase(settings),
+    );
+    syncKitchenRuntimeConfig(
+      settings.kitchenConnectionEnabled,
+      resolveKitchenServerBase(settings),
     );
   }, [settings]);
 

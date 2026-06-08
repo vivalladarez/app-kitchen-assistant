@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Cozinha Assistiva",
+    "name": "Cozinha Assistida",
     "slug": "app-kitchen-assistant",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,8 +15,8 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSSpeechRecognitionUsageDescription": "Permita que o Cozinha Assistiva reconheça sua fala durante o preparo.",
-        "NSMicrophoneUsageDescription": "Permita que o Cozinha Assistiva use o microfone para comandos de voz.",
+        "NSSpeechRecognitionUsageDescription": "Permita que o Cozinha Assistida reconheça sua fala durante o preparo.",
+        "NSMicrophoneUsageDescription": "Permita que o Cozinha Assistida use o microfone para comandos de voz.",
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
@@ -44,8 +44,8 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "Permita que o Cozinha Assistiva use o microfone para comandos de voz.",
-          "speechRecognitionPermission": "Permita que o Cozinha Assistiva reconheça sua fala durante o preparo.",
+          "microphonePermission": "Permita que o Cozinha Assistida use o microfone para comandos de voz.",
+          "speechRecognitionPermission": "Permita que o Cozinha Assistida reconheça sua fala durante o preparo.",
           "androidSpeechServicePackages": [
             "com.google.android.googlequicksearchbox"
           ]

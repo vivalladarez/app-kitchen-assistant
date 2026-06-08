@@ -8,7 +8,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "tsc --noEmit",
-    "tts-server": "python server/tts/server.py"
+    "tts-server": "python server/tts/server.py",
+    "kitchen-server": "python server/kitchen/server.py"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",

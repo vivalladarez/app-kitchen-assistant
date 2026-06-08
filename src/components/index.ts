@@ -5,6 +5,8 @@ export { AgentRecipeBubble } from './AgentRecipeBubble';
 export { AgentSuggestionChip } from './AgentSuggestionChip';
 export { FilterChip } from './FilterChip';
 export { HomeShortcutButton } from './HomeShortcutButton';
+export { KitchenSensorStrip } from './KitchenSensorStrip';
+export { KitchenStatusBadge, SessionStatusBadge } from './KitchenStatusBadge';
 export { ListInput } from './ListInput';
 export { LoadingScreen } from './LoadingScreen';
 export { PrimaryButton } from './PrimaryButton';

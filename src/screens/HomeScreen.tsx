@@ -2,9 +2,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { AgentModeHero, HomeShortcutButton } from '../components';
+import { AgentModeHero, HomeShortcutButton, KitchenSensorStrip, KitchenStatusBadge } from '../components';
 import { spacing } from '../constants/theme';
 import { useSettings } from '../context/SettingsContext';
+import { useKitchenConnection } from '../hooks/useKitchenConnection';
 import { RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -12,6 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export function HomeScreen({ navigation }: Props) {
   const { settings, user, theme, typography } = useSettings();
   const { colors } = theme;
+  const kitchen = useKitchenConnection(settings.kitchenConnectionEnabled);
 
   useEffect(() => {
     if (settings.openInDialogMode) {
@@ -32,11 +34,21 @@ export function HomeScreen({ navigation }: Props) {
           </Text>
         )}
         <Text style={[styles.title, { color: colors.text, fontSize: typography.xxl }]}>
-          Cozinha Assistiva
+          Cozinha Assistida
         </Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary, fontSize: typography.md }]}>
           Seu assistente para a cozinha conectada
         </Text>
+        <View style={styles.kitchenStatus}>
+          <KitchenStatusBadge
+            online={kitchen.online}
+            isChecking={kitchen.isChecking}
+            compact
+          />
+        </View>
+        {kitchen.online && !kitchen.isChecking && (
+          <KitchenSensorStrip sensors={kitchen.sensors} compact />
+        )}
       </View>
 
       <AgentModeHero onPress={() => navigation.navigate('AgentMode')} />
@@ -114,6 +126,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 22,
+  },
+  kitchenStatus: {
+    marginTop: spacing.sm,
   },
   sectionTitle: {
     fontWeight: '700',

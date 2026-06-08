@@ -10,6 +10,7 @@ import {
   voiceProfileLabels,
 } from '../constants/settingsLabels';
 import { spacing } from '../constants/theme';
+import { resolveKitchenServerBase } from '../constants/kitchenConfig';
 import { resolveTtsServerBase } from '../constants/ttsConfig';
 import { useSettings } from '../context/SettingsContext';
 import { speechService } from '../services/speechService';
@@ -161,6 +162,43 @@ export function SettingsScreen(_props: Props) {
         }
       >
         <Text style={{ color: colors.primary, fontWeight: '600' }}>Ouvir</Text>
+      </SettingsOption>
+
+      <Text style={[styles.section, { color: colors.text, fontSize: typography.lg }]}>
+        Cozinha conectada (embarcados)
+      </Text>
+
+      <SettingsToggle
+        label="Monitorar cozinha"
+        description="Consulta sensores no gateway embarcado (porta 8770)"
+        value={settings.kitchenConnectionEnabled}
+        onValueChange={(v) => updateSettings({ kitchenConnectionEnabled: v })}
+      />
+
+      <SettingsOption
+        label="Endereço do gateway"
+        description={
+          resolveKitchenServerBase(settings) ??
+          'Auto: mesmo IP do Expo (deixe vazio) ou ex.: 192.168.1.10'
+        }
+      >
+        <TextInput
+          value={settings.kitchenServerHost}
+          onChangeText={(kitchenServerHost) => updateSettings({ kitchenServerHost })}
+          placeholder="Auto"
+          placeholderTextColor={colors.textSecondary}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[
+            styles.hostInput,
+            {
+              color: colors.text,
+              borderColor: colors.border,
+              backgroundColor: colors.background,
+              fontSize: typography.sm,
+            },
+          ]}
+        />
       </SettingsOption>
 
       <Text style={[styles.section, { color: colors.text, fontSize: typography.lg }]}>
