@@ -119,9 +119,9 @@ Resposta JSON obrigatória:
 | `online` | boolean | `true` se sensores/embarcados respondendo |
 | `temperature` | number | Temperatura da **panela** em °C (atalho = `sensors.pan.celsius`) |
 | `state` | string | `"idle"` \| `"preparing"` \| `"alert"` |
-| `sensors.pan` | object | Slider no Pico W — alerta se `celsius > 40` |
-| `sensors.color` | object | TCS3200 na Micro:bit — `level`: `light` \| `golden` \| `dark` \| `burned`; alerta em `dark`/`burned` |
-| `sensors.sound` | object | Sensor de som no Pico W — `level` 0–100; alerta se `≥ 70` |
+| `sensors.pan` | object | Slider no **Pico W** (GP26 ADC) — alerta se `celsius > 40` |
+| `sensors.color` | object | TCS3200 no **Pico W** (GPIO) — `level`: `light` \| `golden` \| `dark` \| `burned`; alerta em `dark`/`burned` |
+| `sensors.sound` | object | Sensor de som no **Pico W** (GP27 ADC) — `level` 0–100; alerta se `≥ 70` |
 
 Simular no mock (query string):
 
@@ -132,15 +132,17 @@ GET /status?pan=55&color=burned&sound=85
 
 ---
 
-### Sensores na cozinha conectada (3)
+### Sensores na cozinha conectada (3) — tudo no Pico W
 
-| Chip | Hardware | Controlador | Alerta |
-|------|----------|-------------|--------|
-| **Panela** | Slider | Pico W | > 40 °C |
-| **Cor** | TCS3200 | Micro:bit | `dark` / `burned` |
-| **Som** | Sensor de som | Pico W | ≥ 70% |
+| Chip | Hardware | Pino (sugerido) | Alerta |
+|------|----------|-----------------|--------|
+| **Panela** | Slider | GP26 (ADC0) | > 40 °C |
+| **Cor** | TCS3200 | GPIO (S0–S3 + OUT) | `dark` / `burned` |
+| **Som** | Sensor de som | GP27 (ADC1) | ≥ 70% |
 
-**Atuadores de feedback (recomendado):**
+Mapa no código: `src/constants/kitchenSensors.ts` (`PICO_W_PIN_MAP`, `KITCHEN_HARDWARE_MAP`).
+
+**Atuadores de feedback (opcional, também no Pico W):**
 
 | Atuador | Quando acionar |
 |---------|------------------|
@@ -149,27 +151,42 @@ GET /status?pan=55&color=burned&sound=85
 
 ---
 
-### Configuração dos controladores
+### Arquitetura — Pico W → PC → App
 
 ```
-┌─────────────┐     serial/USB      ┌──────────────┐     Wi‑Fi      ┌─────────┐
-│ Micro:bit   │ ──────────────────► │  PC (Python  │ ◄────────────► │  App    │
-│ TCS3200     │   JSON linha/serial │  gateway     │   :8770      │  Expo   │
-└─────────────┘                     │  server.py   │              └─────────┘
-                                    └──────▲───────┘
-┌─────────────┐     Wi‑Fi ou serial         │
-│ Pico W      │ ────────────────────────────┘
-│ Slider + Som│
-└─────────────┘
+┌──────────────────────────────────────────┐
+│         Raspberry Pi Pico W              │
+│  GP26 (ADC) ◄── Slider (panela)          │
+│  GP27 (ADC) ◄── Sensor de som            │
+│  GPIO       ◄── TCS3200 (cor)            │
+│  (opcional) LED / buzzer                 │
+└──────────────────┬───────────────────────┘
+                   │ USB serial (recomendado)
+                   │  ou Wi‑Fi (MicroPython)
+                   ▼
+┌──────────────────────────────────────────┐
+│  PC — server/kitchen/server.py           │
+│  lê serial, expõe GET /status :8770      │
+└──────────────────┬───────────────────────┘
+                   │ Wi‑Fi (mesma rede)
+                   ▼
+┌──────────────────────────────────────────┐
+│  Celular — app Cozinha Assistida         │
+└──────────────────────────────────────────┘
 ```
 
-**Opção simples (recomendada):**
+**Fluxo recomendado (USB serial):**
 
-1. **Micro:bit** lê **TCS3200** → envia JSON por **USB serial** para o PC.
-2. **Pico W** lê **slider** + **sensor de som** no **ADC** → serial ou Wi‑Fi para o PC.
-3. **PC** roda `server/kitchen/server.py` e publica **`GET /status`** na porta **8770**.
+1. **Pico W** lê os 3 sensores e envia **uma linha JSON por serial USB**, ex.:
+   ```json
+   {"pan":52,"color":"golden","sound":25}
+   ```
+2. **PC** lê a serial, monta o JSON completo de `/status` e responde na porta **8770**.
+3. **App** faz poll em `GET http://<IP-DO-PC>:8770/status` (Configurações → Monitorar cozinha).
 
-Firmware de referência: parta de `server/kitchen/server.py` (valores mock) e substitua por leituras reais mantendo o **mesmo JSON**.
+**Alternativa:** Pico W com Wi‑Fi serve `/status` direto — endereço do gateway = IP do Pico.
+
+Firmware de referência: parta de `server/kitchen/server.py` (mock) e substitua os valores pela leitura serial do Pico, mantendo o **mesmo JSON**.
 
 ---
 
@@ -192,14 +209,14 @@ GET http://<IP-DO-GATEWAY>:8770/health
 
 ### Como substituir o mock pelo hardware real
 
-1. **Opção A — Gateway no PC/RPi** (recomendado para integração gradual)  
-   - Embarcados (ESP32, Arduino, etc.) enviam dados via serial/MQTT/Wi‑Fi para um serviço no PC.  
-   - Esse serviço expõe **`GET /status`** na porta **8770** com o JSON acima.  
-   - Use `server/kitchen/server.py` como base e troque os valores mock pela leitura real.
+1. **Opção A — Pico W + gateway no PC** (recomendado)  
+   - Firmware no **Pico W** lê slider (GP26), som (GP27) e TCS3200 (GPIO).  
+   - Envia JSON compacto por **USB serial** para o PC.  
+   - Estenda `server/kitchen/server.py` para ler a serial e expor **`GET /status`** na porta **8770**.
 
-2. **Opção B — Embarcado expõe HTTP direto**  
-   - Se o microcontrolador servir HTTP, implemente **`GET /status`** no firmware.  
-   - No app: **Configurações → Cozinha conectada → Endereço do gateway** = IP do embarcado (ex.: `192.168.1.50`).
+2. **Opção B — Pico W expõe HTTP direto (Wi‑Fi)**  
+   - MicroPython no Pico W serve **`GET /status`** no IP do embarcado.  
+   - No app: **Configurações → Cozinha conectada → Endereço do gateway** = IP do Pico (ex.: `192.168.1.50`).
 
 3. **Offline**  
    - Se `/status` não responder, o app mostra **Cozinha offline** e usa temperatura simulada no comando **Temperatura**.

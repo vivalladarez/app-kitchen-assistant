@@ -1,10 +1,14 @@
 """
-Gateway mock da cozinha conectada — 3 sensores simulados.
+Gateway mock da cozinha conectada — 3 sensores no Raspberry Pi Pico W.
 
-Sensores (lab IHM):
-  1. pan   → Potenciômetro slider no Pico W (temperatura panela)
-  2. color → TCS3200 na Micro:bit (claro → dourado → escuro → queimado)
-  3. sound → Sensor de som no Pico W (chiado/estalo)
+Hardware (lab IHM) — tudo no Pico W:
+  1. pan   → Slider em GP26 (ADC0) — temperatura simulada da panela
+  2. color → TCS3200 em GPIO — claro → dourado → escuro → queimado
+  3. sound → Sensor de som em GP27 (ADC1) — chiado/estalo
+
+Integração real:
+  Pico W envia JSON por USB serial → PC lê serial e expõe GET /status :8770
+  (substitua os valores mock abaixo pela leitura serial)
 
 Uso:
   pip install flask flask-cors
@@ -73,7 +77,11 @@ def build_status(
 
 @app.get("/health")
 def health():
-    return jsonify({"ok": True, "sensors": ["pan", "color", "sound"]})
+    return jsonify({
+        "ok": True,
+        "controller": "Raspberry Pi Pico W",
+        "sensors": ["pan", "color", "sound"],
+    })
 
 
 @app.get("/status")
@@ -88,5 +96,6 @@ def status():
 
 if __name__ == "__main__":
     print(f"Kitchen gateway on http://0.0.0.0:{PORT}", file=sys.stderr)
+    print("Pico W → serial → PC (mock until firmware connected)", file=sys.stderr)
     print("Try: /status?pan=55&color=burned&sound=85", file=sys.stderr)
     app.run(host="0.0.0.0", port=PORT, debug=False)
